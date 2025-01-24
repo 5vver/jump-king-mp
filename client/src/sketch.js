@@ -1,5 +1,3 @@
-// import { ClientConnection } from "";
-
 let width = 0;
 let height = 0;
 let canvas = null;
@@ -44,6 +42,8 @@ let increaseActionsByAmount = 5;
 let increaseActionsEveryXGenerations = 10;
 let evolationSpeed = 1;
 
+let connection;
+
 function preload() {
   backgroundImage = loadImage("images/levelImages/1.png");
   idleImage = loadImage("images/poses/idle.png");
@@ -82,7 +82,7 @@ function setup() {
 
   initSession(1);
 
-  const connection = new ClientConnection();
+  connection = new ClientConnection();
 
   population = new Population(600); // ai shit
   setupLevels();
@@ -118,22 +118,6 @@ let levelNumber = 0;
 
 function draw() {
   background(10);
-
-  // if(frameCount % 5==0 ){
-  //
-  //     levelNumber  = (levelNumber +1)%43;
-  // }
-  // image(backgroundImage,0,0);
-  // if (!creatingLines) {
-
-  //     if (!placingPlayer || playerPlaced) {
-  //
-  //         player.Update();
-  //         player.Show();
-  //     }
-  // } else {
-  //     image(levelImages[levelNumber], 0, 0)
-  // }
   push();
   translate(0, 50);
 
@@ -177,8 +161,6 @@ function draw() {
 let previousFrameRate = 60;
 
 function showLevel(levelNumberToShow) {
-  // print(levelNumberToShow)
-  // image(levels[levelNumberToShow].levelImage, 0, 0)
   levels[levelNumberToShow].show();
 }
 

@@ -308,9 +308,10 @@ class Player {
   }
 
   Update() {
-    if (this.playersDead)
-      //|| this.hasFinishedInstructions)
+    if (this.playersDead) {
       return;
+    }
+
     let currentLines = levels[this.currentLevelNo].lines;
     if (!testingSinglePlayer && !this.hasFinishedInstructions) {
       this.UpdateAIAction();
@@ -333,6 +334,15 @@ class Player {
         this.playerStateAtStartOfBestLevel.getStateFromPlayer(this);
       }
       this.getNewPlayerStateAtEndOfUpdate = false;
+    }
+
+    // network
+    if (connection) {
+      const data = {
+        x: this.currentPos.x,
+        y: this.currentPos.y,
+      };
+      connection.send({ Type: "action", Data: data });
     }
   }
 
