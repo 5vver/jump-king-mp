@@ -7,6 +7,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
 )
 
@@ -23,6 +24,11 @@ type Message struct {
 	Data    interface{}
 }
 
+type Client struct {
+	ID   string
+	Conn *websocket.Conn
+}
+
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:    1024,
 	WriteBufferSize:   1024,
@@ -33,19 +39,19 @@ var upgrader = websocket.Upgrader{
 	},
 }
 
-var clients = make(map[*websocket.Conn]bool)
+var clients = make(map[string]*Client)
 var mutex = &sync.Mutex{}
 
-func handleConnection(conn *websocket.Conn) {
+func handleConnection(client *Client) {
+	clientId, conn := client.ID, client.Conn
 	defer conn.Close()
 
 	msgChan := make(chan []byte)
-	id := ""
 
 	// pong handler
 	conn.SetReadDeadline(time.Now().Add(pongWait))
 	conn.SetPongHandler(func(appData string) error {
-		log.Printf("[INFO] %s: Pong received", id)
+		log.Printf("[INFO] %s: Pong received", clientId)
 		conn.SetReadDeadline(time.Now().Add(pongWait))
 		return nil
 	})
@@ -65,13 +71,8 @@ func handleConnection(conn *websocket.Conn) {
 			if err := json.Unmarshal(message, &msg); err != nil {
 				log.Println("[ERROR] JSON unmarshal error", err)
 				continue
-			} else {
+			} else if msg.Type != "action" {
 				log.Printf("[INFO] Received message: %v", msg)
-			}
-
-			if len(msg.Id) > 0 {
-				id = msg.Id
-				log.Printf("[INFO] connected: %s", id)
 			}
 
 			msgBytes, _ := json.Marshal(msg)
@@ -99,7 +100,7 @@ func handleConnection(conn *websocket.Conn) {
 		_, message, err := conn.ReadMessage()
 		if err != nil {
 			close(msgChan)
-			log.Println(err)
+			log.Printf("[ERROR]: %v", err)
 			break
 		}
 		msgChan <- message
@@ -107,21 +108,39 @@ func handleConnection(conn *websocket.Conn) {
 
 	// Remove client from map on disconnect
 	mutex.Lock()
-	delete(clients, conn)
-	log.Printf("[INFO] Disconnected: %s", id)
+	delete(clients, clientId)
+	log.Printf("[INFO] Disconnected: %s", clientId)
+	mutex.Unlock()
+	// Broadcast disconnected session
+	msgBytes, _ := json.Marshal(Message{Type: "disconnect", Id: clientId})
+	broadcastMessage(msgBytes)
 }
 
 func broadcastMessage(message []byte) {
 	mutex.Lock()
 	defer mutex.Unlock()
 
-	for client := range clients {
-		if err := client.WriteMessage(websocket.TextMessage, message); err != nil {
+	for clientId, client := range clients {
+		conn := client.Conn
+		if err := conn.WriteMessage(websocket.TextMessage, message); err != nil {
 			log.Println("[ERROR] Write error:", err)
-			client.Close()
-			delete(clients, client)
+			conn.Close()
+			delete(clients, clientId)
 		}
 	}
+}
+
+func handleNewClient(client *Client) {
+	mutex.Lock()
+	defer mutex.Unlock()
+
+	clientIds := make([]string, 0, len(clients))
+	for id := range clients {
+		clientIds = append(clientIds, id)
+	}
+
+	msgBytes, _ := json.Marshal(Message{Type: "connect", Id: client.ID, Data: map[string]interface{}{"connections": clientIds}})
+	client.Conn.WriteMessage(websocket.TextMessage, msgBytes)
 }
 
 func handleConnections(w http.ResponseWriter, r *http.Request) {
@@ -130,12 +149,29 @@ func handleConnections(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 
+	clientId := uuid.NewString()
+	newClient := &Client{
+		ID:   clientId,
+		Conn: ws,
+	}
+
 	// add client to map
 	mutex.Lock()
-	clients[ws] = true
+	clients[clientId] = newClient
 	mutex.Unlock()
 
-	handleConnection(ws)
+	log.Printf("[INFO] Client connected: %s", clientId)
+
+	// we broadcast new connection to all users. This needs to be fixed.
+	// We first need to send connection msg to this connection, only after - broadcast
+
+	// send to new client connections all connected clients
+	handleNewClient(newClient)
+	msgBytes, _ := json.Marshal(Message{Type: "connect", Id: clientId})
+	// broadcast new client connections to all clients
+	broadcastMessage(msgBytes)
+
+	handleConnection(newClient)
 }
 
 func main() {

@@ -8,12 +8,23 @@ class ClientConnection {
   #clientId = null;
   connected = false;
 
-  constructor() {
+  constructor({
+    onSessionJoin,
+    onSessionQuit,
+    onConnected,
+    onDisconnected,
+  } = {}) {
     if (!this.#wsConnection) {
       this.#wsConnection = new WebSocket(socketUrl);
     }
 
-    this.#clientId = getRandomId();
+    // this.#clientId = getRandomId();
+
+    this.onConnected = onConnected;
+    this.onDisconnected = onDisconnected;
+    this.onSessionJoin = onSessionJoin;
+    this.onSessionQuit = onSessionQuit;
+
     this.init();
   }
 
@@ -26,18 +37,22 @@ class ClientConnection {
 
     conn.onopen = () => {
       console.log("connected to server");
-      const connectMessage = {
-        // types: info, connect, disconnect, action
-        Type: "connect",
-        Id: this.#clientId,
-        Message: `Player connected - ${this.#clientId}`,
-      };
-      conn.send(JSON.stringify(connectMessage));
+      // const connectMessage = {
+      //   // types: info, connect, disconnect, action
+      //   Type: "connect",
+      //   Id: this.#clientId,
+      //   Message: `Player connected - ${this.#clientId}`,
+      // };
+      // conn.send(JSON.stringify(connectMessage));
       this.connected = true;
+      this.onConnected?.(this);
     };
     conn.onclose = () => {
       this.connected = false;
+      this.#clientId = null;
+      this.#wsConnection = null;
       console.log("Disconnected from server");
+      this.onDisconnected?.();
     };
     conn.onerror = (error) => {
       this.connected = false;
@@ -45,8 +60,27 @@ class ClientConnection {
     };
     conn.onmessage = (event) => {
       const msg = JSON.parse(event.data);
+
+      if (msg.Type === "action") {
+        return;
+      }
       console.log("Message: ");
       console.log(msg);
+
+      if (msg.Type === "connect") {
+        const type = !this.#clientId ? "start" : "new";
+        if (type === "start" && msg.Id) {
+          this.#clientId = msg.Id;
+        } else if (this.#clientId === msg.Id) {
+          return;
+        }
+
+        this.onSessionJoin?.(this, type, msg);
+      }
+
+      if (msg.Type === "disconnect" && msg.Id !== this.#clientId) {
+        this.onSessionQuit?.(msg.Id);
+      }
     };
   }
 
@@ -75,5 +109,9 @@ class ClientConnection {
         Type: data.Type ?? "info",
       }),
     );
+  }
+
+  getClientId() {
+    return this.#clientId;
   }
 }

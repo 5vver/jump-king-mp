@@ -126,7 +126,9 @@ class PlayerState {
 }
 
 class Player {
-  constructor() {
+  constructor(id) {
+    this.id = id;
+
     this.width = 50;
     this.height = 65;
 
@@ -337,13 +339,13 @@ class Player {
     }
 
     // network
-    if (connection) {
-      const data = {
-        x: this.currentPos.x,
-        y: this.currentPos.y,
-      };
-      connection.send({ Type: "action", Data: data });
-    }
+    // if (connection) {
+    //   const data = {
+    //     x: this.currentPos.x,
+    //     y: this.currentPos.y,
+    //   };
+    //   connection.send({ Type: "action", Data: data });
+    // }
   }
 
   ApplyGravity() {

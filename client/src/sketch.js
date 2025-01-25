@@ -68,21 +68,82 @@ function preload() {
   landSound = loadSound("sounds/land.mp3");
 }
 
-const joinedPlayers = [];
+// Stream client player data to server on connect
+let streamInterval;
+const onConnected = (conn) => {
+  if (!player) {
+    return;
+  }
 
-const initSession = (amount) => {
-  for (let i = 0; i < amount; i++) {
-    joinedPlayers.push(new Player());
+  streamInterval = setInterval(
+    () => {
+      if (!conn.connected) {
+        clearInterval(streamInterval);
+        return;
+      }
+
+      const data = {
+        x: player.currentPos.x,
+        y: player.currentPos.y,
+      };
+      conn.send({ Type: "action", Data: data });
+    },
+    // send 20 times per second
+    50,
+  );
+};
+const onDisconnected = () => {
+  // clearInterval(streamInterval)
+};
+
+// TODO: change to Set
+let joinedPlayers = [];
+
+// Spawn main player & joined players on connection
+const onSessionJoin = (conn, connType, msg) => {
+  const clientId = conn.getClientId();
+
+  if (connType === "start" && !player) {
+    player = new Player(clientId);
+
+    const connections = msg.Data?.connections;
+    for (const connectionId of connections) {
+      if (connectionId === clientId) {
+        continue;
+      }
+      joinedPlayers.push(new Player(connectionId));
+    }
+
+    return;
+  }
+
+  if (joinedPlayers.every((p) => p.id !== msg.Id)) {
+    joinedPlayers.push(new Player(msg.Id));
   }
 };
+// Remove disconnected players
+const onSessionQuit = (sessionId) => {
+  joinedPlayers = joinedPlayers.filter((p) => {
+    const matched = p.id === sessionId;
+    if (matched) {
+      delete p;
+    }
+
+    return !matched;
+  });
+};
+// Update joined players state
+const onActionReceive = (msg) => {};
 
 function setup() {
   setupCanvas();
-  player = new Player();
 
-  initSession(1);
-
-  connection = new ClientConnection();
+  connection = new ClientConnection({
+    onSessionJoin,
+    onSessionQuit,
+    // onConnected,
+    onDisconnected,
+  });
 
   population = new Population(600); // ai shit
   setupLevels();
@@ -90,10 +151,6 @@ function setup() {
   fallSound.playMode("sustain");
   bumpSound.playMode("sustain");
   landSound.playMode("sustain");
-
-  // lines.push(new Line(200,height - 80,width - 200, height-80));
-  // lines.push(new Line(10,height - 500,200, height-500));
-  // lines.push(new Line(200,height - 100,200, height-500));
 }
 
 function drawMousePosition() {
@@ -121,16 +178,21 @@ function draw() {
   push();
   translate(0, 50);
 
-  image(levels[player.currentLevelNo].levelImage, 0, 0);
-  levels[player.currentLevelNo].show();
-  player.Update();
-  player.Show();
+  if (player) {
+    image(levels[player.currentLevelNo].levelImage, 0, 0);
+    levels[player.currentLevelNo].show();
+    player.Update();
+    player.Show();
+  } else {
+    image(levels[0].levelImage, 0, 0);
+    levels[0].show();
+  }
 
   for (const joined of joinedPlayers) {
     joined.Update();
 
     // show joined player only on the same level
-    if (player.currentLevelNo === joined.currentLevelNo) {
+    if (player?.currentLevelNo === joined.currentLevelNo) {
       joined.Show();
     }
   }
