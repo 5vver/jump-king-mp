@@ -13,6 +13,7 @@ class ClientConnection {
     onSessionQuit,
     onConnected,
     onDisconnected,
+    onActionReceive,
   } = {}) {
     if (!this.#wsConnection) {
       this.#wsConnection = new WebSocket(socketUrl);
@@ -21,9 +22,9 @@ class ClientConnection {
     // this.#clientId = getRandomId();
 
     this.onConnected = onConnected;
-    this.onDisconnected = onDisconnected;
     this.onSessionJoin = onSessionJoin;
     this.onSessionQuit = onSessionQuit;
+    this.onActionReceive = onActionReceive;
 
     this.init();
   }
@@ -52,7 +53,7 @@ class ClientConnection {
       this.#clientId = null;
       this.#wsConnection = null;
       console.log("Disconnected from server");
-      this.onDisconnected?.();
+      this.onSessionQuit?.();
     };
     conn.onerror = (error) => {
       this.connected = false;
@@ -62,6 +63,7 @@ class ClientConnection {
       const msg = JSON.parse(event.data);
 
       if (msg.Type === "action") {
+        onActionReceive?.(msg);
         return;
       }
       console.log("Message: ");

@@ -337,15 +337,6 @@ class Player {
       }
       this.getNewPlayerStateAtEndOfUpdate = false;
     }
-
-    // network
-    // if (connection) {
-    //   const data = {
-    //     x: this.currentPos.x,
-    //     y: this.currentPos.y,
-    //   };
-    //   connection.send({ Type: "action", Data: data });
-    // }
   }
 
   ApplyGravity() {

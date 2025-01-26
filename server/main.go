@@ -86,7 +86,7 @@ func handleConnection(client *Client) {
 		for {
 			select {
 			case <-ticker.C:
-				conn.SetWriteDeadline(time.Now().Add(writeWait))
+				// conn.SetWriteDeadline(time.Now().Add(writeWait))
 				if err := conn.WriteMessage(websocket.PingMessage, nil); err != nil {
 					log.Println("[ERROR] Error sending ping:", err)
 					return
@@ -162,15 +162,12 @@ func handleConnections(w http.ResponseWriter, r *http.Request) {
 
 	log.Printf("[INFO] Client connected: %s", clientId)
 
-	// we broadcast new connection to all users. This needs to be fixed.
-	// We first need to send connection msg to this connection, only after - broadcast
-
 	// send to new client connections all connected clients
 	handleNewClient(newClient)
 	msgBytes, _ := json.Marshal(Message{Type: "connect", Id: clientId})
+
 	// broadcast new client connections to all clients
 	broadcastMessage(msgBytes)
-
 	handleConnection(newClient)
 }
 

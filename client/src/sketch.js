@@ -68,36 +68,11 @@ function preload() {
   landSound = loadSound("sounds/land.mp3");
 }
 
-// Stream client player data to server on connect
-let streamInterval;
-const onConnected = (conn) => {
-  if (!player) {
-    return;
-  }
-
-  streamInterval = setInterval(
-    () => {
-      if (!conn.connected) {
-        clearInterval(streamInterval);
-        return;
-      }
-
-      const data = {
-        x: player.currentPos.x,
-        y: player.currentPos.y,
-      };
-      conn.send({ Type: "action", Data: data });
-    },
-    // send 20 times per second
-    50,
-  );
-};
-const onDisconnected = () => {
-  // clearInterval(streamInterval)
-};
-
 // TODO: change to Set
 let joinedPlayers = [];
+
+// Stream client player data to server on connect
+let streamInterval;
 
 // Spawn main player & joined players on connection
 const onSessionJoin = (conn, connType, msg) => {
@@ -114,6 +89,33 @@ const onSessionJoin = (conn, connType, msg) => {
       joinedPlayers.push(new Player(connectionId));
     }
 
+    streamInterval = setInterval(
+      () => {
+        if (!conn.connected) {
+          clearInterval(streamInterval);
+          return;
+        }
+
+        const data = {
+          x: player.currentPos.x,
+          y: player.currentPos.y,
+          leftHeld: player.leftHeld,
+          rightHeld: player.rightHeld,
+          jumpHeld: player.jumpHeld,
+          facingRight: player.facingRight,
+          currentLevelNo: player.currentLevelNo,
+          isOnGround: player.isOnGround,
+          isSlidding: player.isSlidding,
+          currentSpeedX: player.currentSpeed.x,
+          currentSpeedY: player.currentSpeed.y,
+          sliddingRight: player.sliddingRight,
+        };
+        conn.send({ Type: "action", Data: data });
+      },
+      // send 20 times per second
+      50,
+    );
+
     return;
   }
 
@@ -124,7 +126,7 @@ const onSessionJoin = (conn, connType, msg) => {
 // Remove disconnected players
 const onSessionQuit = (sessionId) => {
   joinedPlayers = joinedPlayers.filter((p) => {
-    const matched = p.id === sessionId;
+    const matched = p.id === sessionId || !sessionId;
     if (matched) {
       delete p;
     }
@@ -133,7 +135,26 @@ const onSessionQuit = (sessionId) => {
   });
 };
 // Update joined players state
-const onActionReceive = (msg) => {};
+const onActionReceive = (msg) => {
+  const id = msg.Id;
+  const data = msg.Data;
+
+  const updatePlayer = joinedPlayers.find((p) => p.id === id);
+  if (!updatePlayer) {
+    return;
+  }
+  updatePlayer.currentPos = createVector(data.x, data.y);
+  updatePlayer.rightHeld = data.rightHeld;
+  updatePlayer.leftHeld = data.leftHeld;
+  updatePlayer.jumpHeld = data.jumpHeld;
+  updatePlayer.facingRight = data.facingRight;
+  updatePlayer.currentLevelNo = data.currentLevelNo;
+  updatePlayer.isOnGround = data.isOnGround;
+  updatePlayer.isSlidding = data.isSlidding;
+  updatePlayer.currentSpeed.x = data.currentSpeedX;
+  updatePlayer.currentSpeed.y = data.currentSpeedY;
+  updatePlayer.sliddingRight = data.sliddingRight;
+};
 
 function setup() {
   setupCanvas();
@@ -141,8 +162,7 @@ function setup() {
   connection = new ClientConnection({
     onSessionJoin,
     onSessionQuit,
-    // onConnected,
-    onDisconnected,
+    onActionReceive,
   });
 
   population = new Population(600); // ai shit
