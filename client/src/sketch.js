@@ -68,6 +68,9 @@ function preload() {
   landSound = loadSound("sounds/land.mp3");
 }
 
+const getSessionId = () =>
+  new URL(window.location.href).pathname.match(/[^\/]+/g)?.[0];
+
 // TODO: change to Set
 let joinedPlayers = [];
 
@@ -77,6 +80,12 @@ let streamInterval;
 // Spawn main player & joined players on connection
 const onSessionJoin = (conn, connType, msg) => {
   const clientId = conn.getClientId();
+
+  let sessionId = getSessionId();
+  if (!sessionId && msg.SessionId) {
+    sessionId = msg.SessionId;
+    window.location.href = `${window.location.href}${sessionId}`;
+  }
 
   if (connType === "start" && !player) {
     player = new Player(clientId);
@@ -109,6 +118,7 @@ const onSessionJoin = (conn, connType, msg) => {
           currentSpeedX: player.currentSpeed.x,
           currentSpeedY: player.currentSpeed.y,
           sliddingRight: player.sliddingRight,
+          hasFallen: player.hasFallen,
         };
         conn.send({ Type: "action", Data: data });
       },
@@ -119,14 +129,14 @@ const onSessionJoin = (conn, connType, msg) => {
     return;
   }
 
-  if (joinedPlayers.every((p) => p.id !== msg.Id)) {
-    joinedPlayers.push(new Player(msg.Id));
+  if (joinedPlayers.every((p) => p.id !== msg.ClientId)) {
+    joinedPlayers.push(new Player(msg.ClientId));
   }
 };
 // Remove disconnected players
-const onSessionQuit = (sessionId) => {
+const onSessionQuit = (clientId) => {
   joinedPlayers = joinedPlayers.filter((p) => {
-    const matched = p.id === sessionId || !sessionId;
+    const matched = p.id === clientId || !clientId;
     if (matched) {
       delete p;
     }
@@ -136,7 +146,7 @@ const onSessionQuit = (sessionId) => {
 };
 // Update joined players state
 const onActionReceive = (msg) => {
-  const id = msg.Id;
+  const id = msg.ClientId;
   const data = msg.Data;
 
   const updatePlayer = joinedPlayers.find((p) => p.id === id);
@@ -154,12 +164,27 @@ const onActionReceive = (msg) => {
   updatePlayer.currentSpeed.x = data.currentSpeedX;
   updatePlayer.currentSpeed.y = data.currentSpeedY;
   updatePlayer.sliddingRight = data.sliddingRight;
+  updatePlayer.hasFallen = data.hasFallen;
+};
+
+const onConnected = (conn) => {
+  const sessionSlug = getSessionId();
+  // types: info, connect, disconnect, action, session
+  const connectMessage = {
+    Type: "session",
+    SessionId: sessionSlug?.length > 0 ? sessionSlug : undefined,
+    Data: {
+      SessionType: sessionSlug?.length > 0 ? "connect" : "create",
+    },
+  };
+  conn.send(connectMessage);
 };
 
 function setup() {
   setupCanvas();
 
   connection = new ClientConnection({
+    onConnected,
     onSessionJoin,
     onSessionQuit,
     onActionReceive,

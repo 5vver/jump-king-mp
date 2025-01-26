@@ -6,6 +6,7 @@ const socketUrl = "ws://localhost:8000/ws";
 class ClientConnection {
   #wsConnection = null;
   #clientId = null;
+  #sessionId = null;
   connected = false;
 
   constructor({
@@ -38,13 +39,6 @@ class ClientConnection {
 
     conn.onopen = () => {
       console.log("connected to server");
-      // const connectMessage = {
-      //   // types: info, connect, disconnect, action
-      //   Type: "connect",
-      //   Id: this.#clientId,
-      //   Message: `Player connected - ${this.#clientId}`,
-      // };
-      // conn.send(JSON.stringify(connectMessage));
       this.connected = true;
       this.onConnected?.(this);
     };
@@ -70,18 +64,19 @@ class ClientConnection {
       console.log(msg);
 
       if (msg.Type === "connect") {
+        this.#sessionId = msg.SessionId;
         const type = !this.#clientId ? "start" : "new";
-        if (type === "start" && msg.Id) {
-          this.#clientId = msg.Id;
-        } else if (this.#clientId === msg.Id) {
+        if (type === "start" && msg.ClientId) {
+          this.#clientId = msg.ClientId;
+        } else if (this.#clientId === msg.ClientId) {
           return;
         }
 
         this.onSessionJoin?.(this, type, msg);
       }
 
-      if (msg.Type === "disconnect" && msg.Id !== this.#clientId) {
-        this.onSessionQuit?.(msg.Id);
+      if (msg.Type === "disconnect" && msg.ClientId !== this.#clientId) {
+        this.onSessionQuit?.(msg.ClientId);
       }
     };
   }
@@ -107,7 +102,8 @@ class ClientConnection {
     this.#wsConnection.send(
       JSON.stringify({
         ...data,
-        Id: this.#clientId,
+        ClientId: data?.ClientId ?? this.#clientId,
+        SessionId: data?.SessionId ?? this.#sessionId,
         Type: data.Type ?? "info",
       }),
     );
@@ -115,5 +111,9 @@ class ClientConnection {
 
   getClientId() {
     return this.#clientId;
+  }
+
+  getSessionId() {
+    return this.#sessionId;
   }
 }
