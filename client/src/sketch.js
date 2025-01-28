@@ -42,30 +42,33 @@ let increaseActionsByAmount = 5;
 let increaseActionsEveryXGenerations = 10;
 let evolationSpeed = 1;
 
+let font;
 let connection;
 
 function preload() {
-  backgroundImage = loadImage("images/levelImages/1.png");
-  idleImage = loadImage("images/poses/idle.png");
-  squatImage = loadImage("images/poses/squat.png");
-  jumpImage = loadImage("images/poses/jump.png");
-  oofImage = loadImage("images/poses/oof.png");
-  run1Image = loadImage("images/poses/run1.png");
-  run2Image = loadImage("images/poses/run2.png");
-  run3Image = loadImage("images/poses/run3.png");
-  fallenImage = loadImage("images/poses/fallen.png");
-  fallImage = loadImage("images/poses/fall.png");
+  backgroundImage = loadImage("src/assets/images/levelImages/1.png");
+  idleImage = loadImage("src/assets/images/poses/idle.png");
+  squatImage = loadImage("src/assets/images/poses/squat.png");
+  jumpImage = loadImage("src/assets/images/poses/jump.png");
+  oofImage = loadImage("src/assets/images/poses/oof.png");
+  run1Image = loadImage("src/assets/images/poses/run1.png");
+  run2Image = loadImage("src/assets/images/poses/run2.png");
+  run3Image = loadImage("src/assets/images/poses/run3.png");
+  fallenImage = loadImage("src/assets/images/poses/fallen.png");
+  fallImage = loadImage("src/assets/images/poses/fall.png");
 
-  snowImage = loadImage("images/snow3.png");
+  snowImage = loadImage("src/assets/images/snow3.png");
 
   for (let i = 1; i <= 43; i++) {
-    levelImages.push(loadImage("images/levelImages/" + i + ".png"));
+    levelImages.push(loadImage("src/assets/images/levelImages/" + i + ".png"));
   }
 
-  jumpSound = loadSound("sounds/jump.mp3");
-  fallSound = loadSound("sounds/fall.mp3");
-  bumpSound = loadSound("sounds/bump.mp3");
-  landSound = loadSound("sounds/land.mp3");
+  jumpSound = loadSound("src/assets/sounds/jump.mp3");
+  fallSound = loadSound("src/assets/sounds/fall.mp3");
+  bumpSound = loadSound("src/assets/sounds/bump.mp3");
+  landSound = loadSound("src/assets/sounds/land.mp3");
+
+  font = loadFont("src/assets/fonts/ttf_alkhemikal.ttf");
 }
 
 const getSessionId = () =>
@@ -80,6 +83,7 @@ let streamInterval;
 // Spawn main player & joined players on connection
 const onSessionJoin = (conn, connType, msg) => {
   const clientId = conn.getClientId();
+  const playerName = msg.Data?.PlayerName;
 
   let sessionId = getSessionId();
   if (!sessionId && msg.SessionId) {
@@ -88,14 +92,14 @@ const onSessionJoin = (conn, connType, msg) => {
   }
 
   if (connType === "start" && !player) {
-    player = new Player(clientId);
+    player = new Player(clientId, playerName);
 
-    const connections = msg.Data?.connections;
+    const connections = msg.Data?.Connections;
     for (const connectionId of connections) {
       if (connectionId === clientId) {
         continue;
       }
-      joinedPlayers.push(new Player(connectionId));
+      joinedPlayers.push(new Player(connectionId, playerName));
     }
 
     streamInterval = setInterval(
@@ -130,7 +134,7 @@ const onSessionJoin = (conn, connType, msg) => {
   }
 
   if (joinedPlayers.every((p) => p.id !== msg.ClientId)) {
-    joinedPlayers.push(new Player(msg.ClientId));
+    joinedPlayers.push(new Player(msg.ClientId, playerName));
   }
 };
 // Remove disconnected players
@@ -171,10 +175,11 @@ const onConnected = (conn) => {
   const sessionSlug = getSessionId();
   // types: info, connect, disconnect, action, session
   const connectMessage = {
-    Type: "session",
+    Type: "connect",
     SessionId: sessionSlug?.length > 0 ? sessionSlug : undefined,
     Data: {
       SessionType: sessionSlug?.length > 0 ? "connect" : "create",
+      PlayerName: "serega34",
     },
   };
   conn.send(connectMessage);
@@ -423,14 +428,14 @@ function mouseClicked() {
       mousePos1 = null;
       mousePos2 = null;
     }
-  } else if (placingPlayer && !playerPlaced) {
+  } else if (placingPlayer && !playerPlaced && player) {
     playerPlaced = true;
     player.currentPos = createVector(mouseX, mouseY);
   } else if (placingCoins) {
   }
   print(
     "levels[" +
-      player.currentLevelNo +
+      player?.currentLevelNo +
       "].coins.push(new Coin( " +
       floor(mouseX) +
       "," +
@@ -438,12 +443,3 @@ function mouseClicked() {
       ' , "progress" ));',
   );
 }
-
-//todo
-// things to do
-// - when a player lands in a new level, record the game state and start the next evolution at that point DONE
-// - when a player falls into a previous level, end the players movements, and mutate that move which fucked them up with a 100% chance
-// fix landing logic so it checks below maybe, or it checks after all the corrections are done that there is still something below it. actually lets do that now. i dont knwo why im still typing this
-
-// - add a player replay, we could also include a generation replay, thats probably it
-// - maybe consider adding a goal system for really hard levels.

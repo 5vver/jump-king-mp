@@ -1,19 +1,24 @@
 package main
 
-import "github.com/gorilla/websocket"
+import (
+	"sync"
 
-type Message struct {
+	"github.com/gorilla/websocket"
+)
+
+type Message[T any] struct {
 	Type      string
 	SessionId string
 	ClientId  string
 	Message   string
-	Data      interface{}
+	Data      T
 }
 
 type Client struct {
 	SessionId string
 	ClientId  string
 	Conn      *websocket.Conn
+	Mutex     sync.Mutex
 }
 
 // type Session struct {
@@ -24,4 +29,10 @@ type Client struct {
 type BroadcastParams struct {
 	SessionId string
 	Msg       []byte
+}
+
+type InitialConnectData = struct {
+	SessionType string
+	PlayerName  string
+	Connections []string
 }

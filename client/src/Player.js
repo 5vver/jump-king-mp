@@ -126,8 +126,9 @@ class PlayerState {
 }
 
 class Player {
-  constructor(id) {
+  constructor(id, playerName) {
     this.id = id;
+    this.playerName = playerName;
 
     this.width = 50;
     this.height = 65;
@@ -330,6 +331,7 @@ class Player {
     this.UpdateJumpTimer();
     this.CheckForLevelChange();
     this.CheckForCoinCollisions();
+    this.RenderPlayerName();
 
     if (this.getNewPlayerStateAtEndOfUpdate) {
       if (this.currentLevelNo !== 37) {
@@ -337,6 +339,17 @@ class Player {
       }
       this.getNewPlayerStateAtEndOfUpdate = false;
     }
+  }
+
+  RenderPlayerName() {
+    const [x, y] = [this.currentPos.x, this.currentPos.y];
+    if (!x || !y || !this.playerName) {
+      return;
+    }
+    textFont(font);
+    textSize(24);
+    fill(255, 255, 255);
+    text(this.playerName, x - 12, y - 20);
   }
 
   ApplyGravity() {

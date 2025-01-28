@@ -30,16 +30,18 @@ var upgrader = websocket.Upgrader{
 
 var clients = make(map[string]*Client)
 var sessions = make([]string, 0)
-var mutex = &sync.Mutex{}
+var broadcastMutex = &sync.Mutex{}
 
 func broadcastMessage(params BroadcastParams) {
 	sessionId, message := params.SessionId, params.Msg
 
-	mutex.Lock()
-	defer mutex.Unlock()
+	broadcastMutex.Lock()
+	defer broadcastMutex.Unlock()
 
 	for clientId, client := range clients {
 		conn := client.Conn
+		defer client.Mutex.Unlock()
+		client.Mutex.Lock()
 		if client.SessionId != sessionId {
 			continue
 		}
@@ -59,12 +61,13 @@ func handleNewClient(conn *websocket.Conn) (client *Client, err error) {
 		return nil, err
 	}
 
-	initialMessage, err := GenericUnmarshal[Message](message)
+	initialMessage, err := GenericUnmarshal[Message[InitialConnectData]](message)
 	if err != nil {
 		log.Println("[ERROR] JSON unmarshal error", err)
 		return nil, err
 	}
 
+	// Handle session
 	sessionId := ""
 	if len(initialMessage.SessionId) > 0 {
 		sessionId = initialMessage.SessionId
@@ -77,11 +80,13 @@ func handleNewClient(conn *websocket.Conn) (client *Client, err error) {
 		sessions = append(sessions, sessionId)
 	}
 
+	// Handle client
 	clientId := uuid.NewString()
 	newClient := &Client{
 		SessionId: sessionId,
 		ClientId:  clientId,
 		Conn:      conn,
+		Mutex:     sync.Mutex{},
 	}
 
 	clientIds := make([]string, 0, len(clients))
@@ -92,15 +97,22 @@ func handleNewClient(conn *websocket.Conn) (client *Client, err error) {
 		clientIds = append(clientIds, id)
 	}
 
-	msgBytes, _ := json.Marshal(Message{Type: "connect", SessionId: sessionId, ClientId: clientId, Data: map[string]interface{}{"connections": clientIds}})
+	initialMessage.ClientId, initialMessage.SessionId = clientId, sessionId
+	initialMessage.Data = InitialConnectData{
+		Connections: clientIds,
+		SessionType: initialMessage.Data.SessionType,
+		PlayerName:  initialMessage.Data.PlayerName,
+	}
+
+	msgBytes, _ := json.Marshal(initialMessage)
 	conn.WriteMessage(websocket.TextMessage, msgBytes)
 
 	// add client to map
-	mutex.Lock()
+	broadcastMutex.Lock()
 	clients[clientId] = newClient
-	mutex.Unlock()
+	broadcastMutex.Unlock()
 
-	log.Printf("[INFO] Client connected: %s", clientId)
+	log.Printf("[INFO] Client connected: %s to session: %s", clientId, sessionId)
 
 	// broadcast new client connections to all clients
 	broadcastMessage(BroadcastParams{Msg: msgBytes, SessionId: sessionId})
@@ -110,7 +122,10 @@ func handleNewClient(conn *websocket.Conn) (client *Client, err error) {
 
 func handleConnection(client *Client) {
 	clientId, sessionId, conn := client.ClientId, client.SessionId, client.Conn
-	defer conn.Close()
+	defer func() {
+		conn.Close()
+		log.Printf("[INFO] Connection closed: %s", clientId)
+	}()
 
 	msgChan := make(chan []byte)
 
@@ -122,9 +137,6 @@ func handleConnection(client *Client) {
 		return nil
 	})
 
-	ticker := time.NewTicker(pingPeriod)
-	defer ticker.Stop()
-
 	// Received messages handle routine
 	go func() {
 		for {
@@ -133,7 +145,7 @@ func handleConnection(client *Client) {
 				return
 			}
 
-			msg, err := GenericUnmarshal[Message](message)
+			msg, err := GenericUnmarshal[Message[interface{}]](message)
 			if err != nil {
 				log.Println("[ERROR] JSON unmarshal error", err)
 				continue
@@ -141,23 +153,23 @@ func handleConnection(client *Client) {
 				log.Printf("[INFO] Received message: %v", msg)
 			}
 
-			// msgBytes, err := json.Marshal(msg)
-			// if err != nil {
-			// 	log.Println("[ERROR] JSON marshal error", err)
-			// }
 			broadcastMessage(BroadcastParams{Msg: message, SessionId: sessionId})
-			// conn.WriteMessage(websocket.TextMessage, msgBytes)
 		}
 	}()
 
-	// Ticker ping routine
+	tickerDone := make(chan struct{})
 	go func() {
+		ticker := time.NewTicker(pingPeriod)
+		defer ticker.Stop()
+
 		for {
 			select {
+			case <-tickerDone:
+				return
 			case <-ticker.C:
 				// conn.SetWriteDeadline(time.Now().Add(writeWait))
 				if err := conn.WriteMessage(websocket.PingMessage, nil); err != nil {
-					log.Println("[ERROR] Error sending ping:", err)
+					log.Printf("[ERROR] Ping err: %e", err)
 					return
 				}
 			}
@@ -166,7 +178,7 @@ func handleConnection(client *Client) {
 
 	// Read connection messages
 	for {
-		_, message, err := conn.ReadMessage()
+		_, message, err := client.Conn.ReadMessage()
 		if err != nil {
 			close(msgChan)
 			log.Printf("[ERROR]: %v", err)
@@ -175,13 +187,14 @@ func handleConnection(client *Client) {
 		msgChan <- message
 	}
 
+	tickerDone <- struct{}{}
 	// Remove client from map on disconnect
-	mutex.Lock()
+	broadcastMutex.Lock()
 	delete(clients, clientId)
 	log.Printf("[INFO] Disconnected: %s", clientId)
-	mutex.Unlock()
+	broadcastMutex.Unlock()
 	// Broadcast disconnected session
-	msgBytes, _ := json.Marshal(Message{Type: "disconnect", ClientId: clientId, SessionId: sessionId})
+	msgBytes, _ := json.Marshal(Message[interface{}]{Type: "disconnect", ClientId: clientId, SessionId: sessionId})
 	broadcastMessage(BroadcastParams{Msg: msgBytes, SessionId: sessionId})
 }
 
@@ -194,6 +207,7 @@ func handleConnections(w http.ResponseWriter, r *http.Request) {
 	newClient, err := handleNewClient(ws)
 	if err != nil {
 		log.Printf("[ERROR] error handling new client: %v", err)
+		ws.Close()
 	}
 
 	handleConnection(newClient)
