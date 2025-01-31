@@ -73,7 +73,7 @@ func handleNewClient(conn *websocket.Conn) (client *Client, err error) {
 		sessionId = initialMessage.SessionId
 	} else {
 		// TODO: change sessionid gen method
-		sessionId = uuid.NewString()[0:4]
+		sessionId = uuid.NewString()[0:6]
 	}
 	if !slices.Contains(sessions, sessionId) {
 		log.Printf("[INFO] New session: %s", sessionId)
@@ -85,21 +85,23 @@ func handleNewClient(conn *websocket.Conn) (client *Client, err error) {
 	newClient := &Client{
 		SessionId: sessionId,
 		ClientId:  clientId,
+		Name:      initialMessage.Data.PlayerName,
 		Conn:      conn,
 		Mutex:     sync.Mutex{},
 	}
 
-	clientIds := make([]string, 0, len(clients))
+	// [clientId]: clientName
+	connections := map[string]string{}
 	for id, client := range clients {
 		if client.SessionId != sessionId {
 			continue
 		}
-		clientIds = append(clientIds, id)
+		connections[id] = client.Name
 	}
 
 	initialMessage.ClientId, initialMessage.SessionId = clientId, sessionId
 	initialMessage.Data = InitialConnectData{
-		Connections: clientIds,
+		Connections: connections,
 		SessionType: initialMessage.Data.SessionType,
 		PlayerName:  initialMessage.Data.PlayerName,
 	}

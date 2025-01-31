@@ -17,6 +17,7 @@ type Message[T any] struct {
 type Client struct {
 	SessionId string
 	ClientId  string
+	Name      string
 	Conn      *websocket.Conn
 	Mutex     sync.Mutex
 }
@@ -34,5 +35,5 @@ type BroadcastParams struct {
 type InitialConnectData = struct {
 	SessionType string
 	PlayerName  string
-	Connections []string
+	Connections map[string]string
 }

@@ -44,6 +44,11 @@ let evolationSpeed = 1;
 
 let font;
 let connection;
+const joinedPlayers = new Set([]);
+// Stream client player data to server on connect
+let streamInterval;
+// The name of player
+let playerName = "";
 
 function preload() {
   backgroundImage = loadImage("src/assets/images/levelImages/1.png");
@@ -74,16 +79,10 @@ function preload() {
 const getSessionId = () =>
   new URL(window.location.href).pathname.match(/[^\/]+/g)?.[0];
 
-// TODO: change to Set
-let joinedPlayers = [];
-
-// Stream client player data to server on connect
-let streamInterval;
-
 // Spawn main player & joined players on connection
 const onSessionJoin = (conn, connType, msg) => {
   const clientId = conn.getClientId();
-  const playerName = msg.Data?.PlayerName;
+  const pName = msg.Data?.PlayerName;
 
   let sessionId = getSessionId();
   if (!sessionId && msg.SessionId) {
@@ -92,14 +91,14 @@ const onSessionJoin = (conn, connType, msg) => {
   }
 
   if (connType === "start" && !player) {
-    player = new Player(clientId, playerName);
+    player = new Player(clientId, pName);
 
     const connections = msg.Data?.Connections;
-    for (const connectionId of connections) {
+    for (const [connectionId, connectionName] of Object.entries(connections)) {
       if (connectionId === clientId) {
         continue;
       }
-      joinedPlayers.push(new Player(connectionId, playerName));
+      joinedPlayers.add(new Player(connectionId, connectionName));
     }
 
     streamInterval = setInterval(
@@ -133,19 +132,16 @@ const onSessionJoin = (conn, connType, msg) => {
     return;
   }
 
-  if (joinedPlayers.every((p) => p.id !== msg.ClientId)) {
-    joinedPlayers.push(new Player(msg.ClientId, playerName));
+  if ([...joinedPlayers].every((p) => p.id !== msg.ClientId)) {
+    joinedPlayers.add(new Player(msg.ClientId, pName));
   }
 };
 // Remove disconnected players
 const onSessionQuit = (clientId) => {
-  joinedPlayers = joinedPlayers.filter((p) => {
-    const matched = p.id === clientId || !clientId;
-    if (matched) {
-      delete p;
+  joinedPlayers.forEach((p) => {
+    if (p.id === clientId || !clientId) {
+      joinedPlayers.delete(p);
     }
-
-    return !matched;
   });
 };
 // Update joined players state
@@ -153,7 +149,7 @@ const onActionReceive = (msg) => {
   const id = msg.ClientId;
   const data = msg.Data;
 
-  const updatePlayer = joinedPlayers.find((p) => p.id === id);
+  const updatePlayer = [...joinedPlayers].find((p) => p.id === id);
   if (!updatePlayer) {
     return;
   }
@@ -179,21 +175,39 @@ const onConnected = (conn) => {
     SessionId: sessionSlug?.length > 0 ? sessionSlug : undefined,
     Data: {
       SessionType: sessionSlug?.length > 0 ? "connect" : "create",
-      PlayerName: "serega34",
+      PlayerName: playerName,
     },
   };
   conn.send(connectMessage);
 };
 
-function setup() {
-  setupCanvas();
+function setupCanvas() {
+  canvas = createCanvas(1200, 950);
+  canvas.parent("canvas");
+  width = canvas.width;
+  height = canvas.height - 50;
+}
 
-  connection = new ClientConnection({
-    onConnected,
-    onSessionJoin,
-    onSessionQuit,
-    onActionReceive,
+function setup() {
+  createModal((inputValue, hide) => {
+    if (
+      !inputValue ||
+      typeof inputValue !== "string" ||
+      inputValue.length < 1
+    ) {
+      return;
+    }
+
+    hide();
+    playerName = inputValue;
+    connection = new ClientConnection({
+      onConnected,
+      onSessionJoin,
+      onSessionQuit,
+      onActionReceive,
+    });
   });
+  setupCanvas();
 
   population = new Population(600); // ai shit
   setupLevels();
@@ -238,14 +252,14 @@ function draw() {
     levels[0].show();
   }
 
-  for (const joined of joinedPlayers) {
-    joined.Update();
+  joinedPlayers.forEach((p) => {
+    p.Update();
 
     // show joined player only on the same level
-    if (player?.currentLevelNo === joined.currentLevelNo) {
-      joined.Show();
+    if (player?.currentLevelNo === p.currentLevelNo) {
+      p.Show();
     }
-  }
+  });
 
   if (showingLines || creatingLines) showLines();
 
@@ -288,13 +302,6 @@ function showLines() {
   }
 }
 
-function setupCanvas() {
-  canvas = createCanvas(1200, 950);
-  canvas.parent("canvas");
-  width = canvas.width;
-  height = canvas.height - 50;
-}
-
 const getPlayerJumpTimeout = () =>
   setTimeout(() => {
     player.jumpHeld = false;
@@ -311,9 +318,9 @@ function keyPressed() {
       break;
     case "R":
       player.ResetPlayer();
-      for (const joined of joinedPlayers) {
-        joined.ResetPlayer();
-      }
+      joinedPlayers.forEach((p) => {
+        p.ResetPlayer();
+      });
       break;
     case "S":
       bumpSound.stop();

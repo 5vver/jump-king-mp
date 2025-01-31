@@ -331,7 +331,6 @@ class Player {
     this.UpdateJumpTimer();
     this.CheckForLevelChange();
     this.CheckForCoinCollisions();
-    this.RenderPlayerName();
 
     if (this.getNewPlayerStateAtEndOfUpdate) {
       if (this.currentLevelNo !== 37) {
@@ -349,7 +348,10 @@ class Player {
     textFont(font);
     textSize(24);
     fill(255, 255, 255);
-    text(this.playerName, x - 12, y - 20);
+
+    const midX = (x + (x + this.width)) / 2;
+    const topY = y - this.height + 12;
+    text(this.playerName, midX - this.playerName.length * 5, topY, 50, 65);
   }
 
   ApplyGravity() {
@@ -628,6 +630,8 @@ class Player {
   Show() {
     if (this.playersDead) return;
     push();
+
+    this.RenderPlayerName();
 
     //if on the previous level and is up the top, then show
     if (this.currentLevelNo === population.showingLevelNo - 1) {
