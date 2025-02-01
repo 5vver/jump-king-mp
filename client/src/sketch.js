@@ -199,7 +199,7 @@ function setup() {
     }
 
     hide();
-    playerName = inputValue;
+    playerName = inputValue.replace(/ /g, "");
     connection = new ClientConnection({
       onConnected,
       onSessionJoin,
@@ -311,6 +311,10 @@ const getPlayerJumpTimeout = () =>
 let playerJumpTimeout;
 
 function keyPressed() {
+  if (!player) {
+    return;
+  }
+
   switch (key) {
     case " ":
       player.jumpHeld = true;
@@ -343,6 +347,10 @@ let replayingBestPlayer = false;
 let cloneOfBestPlayer = null;
 
 function keyReleased() {
+  if (!player) {
+    return;
+  }
+
   switch (key) {
     case "B":
       replayingBestPlayer = true;
@@ -440,13 +448,13 @@ function mouseClicked() {
     player.currentPos = createVector(mouseX, mouseY);
   } else if (placingCoins) {
   }
-  print(
-    "levels[" +
-      player?.currentLevelNo +
-      "].coins.push(new Coin( " +
-      floor(mouseX) +
-      "," +
-      floor(mouseY - 50) +
-      ' , "progress" ));',
-  );
+  // print(
+  //   "levels[" +
+  //     player?.currentLevelNo +
+  //     "].coins.push(new Coin( " +
+  //     floor(mouseX) +
+  //     "," +
+  //     floor(mouseY - 50) +
+  //     ' , "progress" ));',
+  // );
 }

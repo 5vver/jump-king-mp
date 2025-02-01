@@ -49,6 +49,7 @@ func broadcastMessage(params BroadcastParams) {
 			log.Println("[ERROR] Write error:", err)
 			conn.Close()
 			delete(clients, clientId)
+			return
 		}
 	}
 }
@@ -72,7 +73,6 @@ func handleNewClient(conn *websocket.Conn) (client *Client, err error) {
 	if len(initialMessage.SessionId) > 0 {
 		sessionId = initialMessage.SessionId
 	} else {
-		// TODO: change sessionid gen method
 		sessionId = uuid.NewString()[0:6]
 	}
 	if !slices.Contains(sessions, sessionId) {
@@ -170,10 +170,13 @@ func handleConnection(client *Client) {
 				return
 			case <-ticker.C:
 				// conn.SetWriteDeadline(time.Now().Add(writeWait))
+				client.Mutex.Lock()
 				if err := conn.WriteMessage(websocket.PingMessage, nil); err != nil {
 					log.Printf("[ERROR] Ping err: %e", err)
+					client.Mutex.Unlock()
 					return
 				}
+				client.Mutex.Unlock()
 			}
 		}
 	}()
@@ -212,5 +215,5 @@ func handleConnections(w http.ResponseWriter, r *http.Request) {
 		ws.Close()
 	}
 
-	handleConnection(newClient)
+	go handleConnection(newClient)
 }
