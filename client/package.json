@@ -5,7 +5,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon src/server.js",
-    "start": "vite --host"
+    "start": "vite --host",
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "repository": {
     "type": "git",

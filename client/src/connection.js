@@ -1,8 +1,6 @@
 const getRandomId = () =>
   new Date().getTime().toString(36) + Math.random().toString(36).slice(2);
 
-const socketUrl = "ws://localhost:8000/ws";
-
 class ClientConnection {
   #wsConnection = null;
   #clientId = null;
@@ -17,7 +15,7 @@ class ClientConnection {
     onActionReceive,
   } = {}) {
     if (!this.#wsConnection) {
-      this.#wsConnection = new WebSocket(socketUrl);
+      this.#wsConnection = new WebSocket(import.meta.env.VITE_WS_URL);
     }
 
     // this.#clientId = getRandomId();
@@ -116,4 +114,11 @@ class ClientConnection {
   getSessionId() {
     return this.#sessionId;
   }
+
+  getIsConnected() {
+    return this.connected;
+  }
 }
+
+// workaround for non module js files
+window.ClientConnection = ClientConnection;

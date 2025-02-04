@@ -42,3 +42,6 @@ function createModal(onClick) {
 
   document.body.appendChild(modalContainer);
 }
+
+const getSessionId = () =>
+  new URL(window.location.href).pathname.match(/[^\/]+/g)?.[0];

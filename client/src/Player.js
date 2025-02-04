@@ -330,7 +330,7 @@ class Player {
     this.CheckCollisions(currentLines);
     this.UpdateJumpTimer();
     this.CheckForLevelChange();
-    this.CheckForCoinCollisions();
+    // this.CheckForCoinCollisions();
 
     if (this.getNewPlayerStateAtEndOfUpdate) {
       if (this.currentLevelNo !== 37) {

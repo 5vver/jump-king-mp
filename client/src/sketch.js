@@ -76,9 +76,6 @@ function preload() {
   font = loadFont("src/assets/fonts/ttf_alkhemikal.ttf");
 }
 
-const getSessionId = () =>
-  new URL(window.location.href).pathname.match(/[^\/]+/g)?.[0];
-
 // Spawn main player & joined players on connection
 const onSessionJoin = (conn, connType, msg) => {
   const clientId = conn.getClientId();
@@ -136,6 +133,7 @@ const onSessionJoin = (conn, connType, msg) => {
     joinedPlayers.add(new Player(msg.ClientId, pName));
   }
 };
+
 // Remove disconnected players
 const onSessionQuit = (clientId) => {
   joinedPlayers.forEach((p) => {
@@ -144,6 +142,7 @@ const onSessionQuit = (clientId) => {
     }
   });
 };
+
 // Update joined players state
 const onActionReceive = (msg) => {
   const id = msg.ClientId;
@@ -274,14 +273,15 @@ function draw() {
   fill(0);
   noStroke();
   rect(0, 0, width, 50);
-  if (!testingSinglePlayer) {
-    textSize(32);
-    fill(255, 255, 255);
-    text("FPS: " + previousFrameRate, width - 160, 35);
-    text("Gen: " + population.gen, 30, 35);
-    text("Moves: " + population.players[0].brain.instructions.length, 200, 35);
-    text("Best Height: " + population.bestHeight, 400, 35);
-  }
+
+  textSize(32);
+  textFont(font);
+  fill(255, 255, 255);
+  // text("FPS: " + previousFrameRate, width - 160, 35);
+  text(`Session: ${connection ? connection.getSessionId() : "no"}`, 20, 35);
+  const isConnected = !!connection?.getIsConnected();
+  fill(isConnected ? 0 : 255, isConnected ? 255 : 0, 0);
+  text(isConnected ? "Connected" : "Disconnected", width - 160, 35);
 }
 
 let previousFrameRate = 60;
@@ -376,6 +376,7 @@ function keyReleased() {
       }
       break;
     case "N":
+      return; // disable
       if (creatingLines) {
         levelNumber += 1;
         linesString += "\nlevels.push(tempLevel);";
