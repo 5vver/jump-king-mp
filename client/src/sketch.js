@@ -302,14 +302,6 @@ function showLines() {
   }
 }
 
-const getPlayerJumpTimeout = () =>
-  setTimeout(() => {
-    player.jumpHeld = false;
-    player.Jump();
-  }, 600);
-
-let playerJumpTimeout;
-
 function keyPressed() {
   if (!player) {
     return;
@@ -318,7 +310,6 @@ function keyPressed() {
   switch (key) {
     case " ":
       player.jumpHeld = true;
-      playerJumpTimeout = getPlayerJumpTimeout();
       break;
     case "R":
       player.ResetPlayer();
@@ -362,7 +353,6 @@ function keyReleased() {
 
     case " ":
       if (!creatingLines && player.jumpHeld) {
-        clearTimeout(playerJumpTimeout);
         player.jumpHeld = false;
         player.Jump();
       }

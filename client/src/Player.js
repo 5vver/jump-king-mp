@@ -338,6 +338,11 @@ class Player {
       }
       this.getNewPlayerStateAtEndOfUpdate = false;
     }
+
+    if (this.jumpHeld && this.jumpTimer >= maxJumpTimer) {
+      this.jumpHeld = false;
+      this.Jump();
+    }
   }
 
   RenderPlayerName() {
