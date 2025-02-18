@@ -45,3 +45,25 @@ function createModal(onClick) {
 
 const getSessionId = () =>
   new URL(window.location.href).pathname.match(/[^\/]+/g)?.[0];
+
+function createChatWindow() {
+  const chatContainer = document.createElement("div");
+  const input = document.createElement("input");
+  const button = document.createElement("button");
+  const text = document.createElement("p");
+
+  // style
+  chatContainer.style.display = "flex";
+  chatContainer.style.flexDirection = "column";
+  chatContainer.style.gap = "8px";
+  chatContainer.style.position = "absolute";
+  chatContainer.style.top = 0;
+  chatContainer.style.right = 0;
+  chatContainer.style.background = "red";
+  chatContainer.style.width = "320px";
+  chatContainer.style.height = "120px";
+
+  document.body.appendChild(chatContainer);
+}
+
+export { createModal, createChatWindow, getSessionId };

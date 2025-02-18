@@ -1,3 +1,5 @@
+import { Constants } from "./constants.js";
+
 let minJumpSpeed = 5;
 let maxJumpSpeed = 22;
 let maxJumpTimer = 30;
@@ -18,8 +20,11 @@ let mutePlayers = false;
 
 class PlayerState {
   constructor() {
-    this.currentPos = createVector(width / 2, height - 200); // this is the top left corner of the hitbox
-    this.currentSpeed = createVector(0, 0);
+    this.currentPos = window.createVector(
+      Constants.width / 2,
+      Constants.height - 200,
+    ); // this is the top left corner of the hitbox
+    this.currentSpeed = window.createVector(0, 0);
     this.isOnGround = false;
 
     this.blizzardForce = 0;
@@ -32,7 +37,7 @@ class PlayerState {
     this.reachedHeightAtStepNo = 0;
     this.bestLevelReachedOnActionNo = 0;
 
-    this.brainActionNumber = 0;
+    // this.brainActionNumber = 0;
 
     this.currentLevelNo = 0;
     this.jumpStartingHeight = 0;
@@ -57,7 +62,7 @@ class PlayerState {
     this.bestLevelReached = player.bestLevelReached;
     this.reachedHeightAtStepNo = player.reachedHeightAtStepNo;
     this.bestLevelReachedOnActionNo = player.bestLevelReachedOnActionNo;
-    this.brainActionNumber = player.brain.currentInstructionNumber;
+    // this.brainActionNumber = player.brain.currentInstructionNumber;
 
     this.currentLevelNo = player.currentLevelNo;
     this.jumpStartingHeight = player.jumpStartingHeight;
@@ -87,7 +92,7 @@ class PlayerState {
     player.bestLevelReached = this.bestLevelReached;
     player.reachedHeightAtStepNo = this.reachedHeightAtStepNo;
     player.bestLevelReachedOnActionNo = this.bestLevelReachedOnActionNo;
-    player.brain.currentInstructionNumber = this.brainActionNumber;
+    // player.brain.currentInstructionNumber = this.brainActionNumber;
 
     player.currentLevelNo = this.currentLevelNo;
     player.jumpStartingHeight = this.jumpStartingHeight;
@@ -113,7 +118,7 @@ class PlayerState {
     clone.bestLevelReached = this.bestLevelReached;
     clone.reachedHeightAtStepNo = this.reachedHeightAtStepNo;
     clone.bestLevelReachedOnActionNo = this.bestLevelReachedOnActionNo;
-    clone.brainActionNumber = this.brainActionNumber;
+    // clone.brainActionNumber = this.brainActionNumber;
 
     clone.currentLevelNo = this.currentLevelNo;
     clone.jumpStartingHeight = this.jumpStartingHeight;
@@ -133,9 +138,12 @@ class Player {
     this.width = 50;
     this.height = 65;
 
-    // this.currentPos = createVector(width / 2, height - 200); // this is the top left corner of the hitbox
-    this.currentPos = createVector(width / 2, height - 200); // this is the top left corner of the hitbox
-    this.currentSpeed = createVector(0, 0);
+    // this.currentPos = window.createVector(width / 2, height - 200); // this is the top left corner of the hitbox
+    this.currentPos = window.createVector(
+      Constants.width / 2,
+      Constants.height - 200,
+    ); // this is the top left corner of the hitbox
+    this.currentSpeed = window.createVector(0, 0);
     this.isOnGround = false;
 
     this.jumpHeld = false;
@@ -149,44 +157,44 @@ class Player {
     this.isSlidding = false;
     this.currentRunIndex = 1;
     this.runCycle = [
-      run1Image,
-      run1Image,
-      run1Image,
-      run1Image,
-      run1Image,
-      run1Image,
-      run1Image,
-      run1Image,
-      run1Image,
-      run1Image,
-      run1Image,
-      run1Image,
-      run1Image,
-      run2Image,
-      run2Image,
-      run2Image,
-      run2Image,
-      run2Image,
-      run2Image,
-      run3Image,
-      run3Image,
-      run3Image,
-      run3Image,
-      run3Image,
-      run3Image,
-      run3Image,
-      run3Image,
-      run3Image,
-      run3Image,
-      run3Image,
-      run3Image,
-      run3Image,
-      run2Image,
-      run2Image,
-      run2Image,
-      run2Image,
-      run2Image,
-      run2Image,
+      Constants.run1Image,
+      Constants.run1Image,
+      Constants.run1Image,
+      Constants.run1Image,
+      Constants.run1Image,
+      Constants.run1Image,
+      Constants.run1Image,
+      Constants.run1Image,
+      Constants.run1Image,
+      Constants.run1Image,
+      Constants.run1Image,
+      Constants.run1Image,
+      Constants.run1Image,
+      Constants.run2Image,
+      Constants.run2Image,
+      Constants.run2Image,
+      Constants.run2Image,
+      Constants.run2Image,
+      Constants.run2Image,
+      Constants.run3Image,
+      Constants.run3Image,
+      Constants.run3Image,
+      Constants.run3Image,
+      Constants.run3Image,
+      Constants.run3Image,
+      Constants.run3Image,
+      Constants.run3Image,
+      Constants.run3Image,
+      Constants.run3Image,
+      Constants.run3Image,
+      Constants.run3Image,
+      Constants.run3Image,
+      Constants.run2Image,
+      Constants.run2Image,
+      Constants.run2Image,
+      Constants.run2Image,
+      Constants.run2Image,
+      Constants.run2Image,
     ];
     this.sliddingRight = false;
 
@@ -206,22 +214,22 @@ class Player {
     this.aiActionMaxTime = 0;
     this.isWaitingToStartAction = false;
     this.actionStarted = false;
-    this.brain = new Brain(startingPlayerActions);
+    // this.brain = new Brain(startingPlayerActions);
     this.currentAction = null;
 
     this.playersDead = false;
 
-    this.previousSpeed = createVector(0, 0);
+    this.previousSpeed = window.createVector(0, 0);
 
     this.bestHeightReached = 0;
     this.bestLevelReached = 0;
     this.reachedHeightAtStepNo = 0;
     this.bestLevelReachedOnActionNo = 0;
     //
-    // this.jumpSound = loadSound('sounds/jump.mp3')
-    // this.fallSound = loadSound('sounds/fall.mp3')
-    // bumpSound = loadSound('sounds/bump.mp3')
-    // landSound = loadSound('sounds/land.mp3')
+    // this.Constants.jumpSound = loadSound('sounds/jump.mp3')
+    // this.Constants.fallSound = loadSound('sounds/fall.mp3')
+    // Constants.bumpSound = loadSound('sounds/bump.mp3')
+    // Constants.landSound = loadSound('sounds/land.mp3')
 
     this.fitness = 0;
     this.hasFinishedInstructions = false;
@@ -241,8 +249,11 @@ class Player {
   }
 
   ResetPlayer() {
-    this.currentPos = createVector(width / 2, height - 200); // this is the top left corner of the hitbox
-    this.currentSpeed = createVector(0, 0);
+    this.currentPos = window.createVector(
+      Constants.width / 2,
+      Constants.height - 200,
+    ); // this is the top left corner of the hitbox
+    this.currentSpeed = window.createVector(0, 0);
     this.isOnGround = false;
 
     this.jumpHeld = false;
@@ -274,11 +285,11 @@ class Player {
     this.isWaitingToStartAction = false;
     this.actionStarted = false;
 
-    this.brain.currentInstructionNumber = 0;
+    // this.brain.currentInstructionNumber = 0;
     this.currentAction = null;
 
     this.playersDead = false;
-    this.previousSpeed = createVector(0, 0);
+    this.previousSpeed = window.createVector(0, 0);
     this.bestHeightReached = 0;
     this.reachedHeightAtStepNo = 0;
 
@@ -288,11 +299,11 @@ class Player {
 
   clone() {
     let clone = new Player();
-    clone.brain = this.brain.clone();
-    clone.playerStateAtStartOfBestLevel =
-      this.playerStateAtStartOfBestLevel.clone();
-    clone.brain.parentReachedBestLevelAtActionNo =
-      this.bestLevelReachedOnActionNo;
+    // clone.brain = this.brain.clone();
+    // clone.playerStateAtStartOfBestLevel =
+    //   this.playerStateAtStartOfBestLevel.clone();
+    // clone.brain.parentReachedBestLevelAtActionNo =
+    //   this.bestLevelReachedOnActionNo;
     return clone;
   }
 
@@ -304,7 +315,7 @@ class Player {
     // current best fitness max just including height is 640,000, getting a coin has to be the most important thing so
     let coinValue = 500000;
     let heightThisLevel =
-      this.bestHeightReached - height * this.bestLevelReached;
+      this.bestHeightReached - Constants.height * this.bestLevelReached;
     this.fitness =
       heightThisLevel * heightThisLevel +
       coinValue * this.numberOfCoinsPickedUp;
@@ -315,10 +326,7 @@ class Player {
       return;
     }
 
-    let currentLines = levels[this.currentLevelNo].lines;
-    if (!testingSinglePlayer && !this.hasFinishedInstructions) {
-      this.UpdateAIAction();
-    }
+    let currentLines = Constants.levels[this.currentLevelNo].lines;
     this.UpdatePlayerSlide(currentLines);
     this.ApplyGravity();
     this.ApplyBlizzardForce();
@@ -350,35 +358,41 @@ class Player {
     if (!x || !y || !this.playerName) {
       return;
     }
-    textFont(font);
-    textSize(24);
-    fill(255, 255, 255);
+    window.textFont(Constants.font);
+    window.textSize(24);
+    window.fill(255, 255, 255);
 
     const midX = (x + (x + this.width)) / 2;
     const topY = y - this.height + 12;
-    text(this.playerName, midX - this.playerName.length * 5, topY, 50, 65);
+    window.text(
+      this.playerName,
+      midX - this.playerName.length * 5,
+      topY,
+      50,
+      65,
+    );
   }
 
   ApplyGravity() {
     if (!this.isOnGround) {
       if (this.isSlidding) {
-        this.currentSpeed.y = min(
+        this.currentSpeed.y = window.min(
           this.currentSpeed.y + gravity * 0.5,
           terminalVelocity * 0.5,
         );
         if (this.sliddingRight) {
-          this.currentSpeed.x = min(
+          this.currentSpeed.x = window.min(
             this.currentSpeed.x + gravity * 0.5,
             terminalVelocity * 0.5,
           );
         } else {
-          this.currentSpeed.x = max(
+          this.currentSpeed.x = window.max(
             this.currentSpeed.x - gravity * 0.5,
             -terminalVelocity * 0.5,
           );
         }
       } else {
-        this.currentSpeed.y = min(
+        this.currentSpeed.y = window.min(
           this.currentSpeed.y + gravity,
           terminalVelocity,
         );
@@ -387,10 +401,10 @@ class Player {
   }
 
   ApplyBlizzardForce() {
-    // if(!levels[this.currentLevelNo].isBlizzardLevel)
+    // if(!Constants.levels[this.currentLevelNo].isBlizzardLevel)
     //     return;
 
-    if (abs(this.blizzardForce) >= maxBlizzardForce) {
+    if (window.abs(this.blizzardForce) >= maxBlizzardForce) {
       this.maxBlizzardForceTimer += 1;
       if (this.maxBlizzardForceTimer > blizzardMaxSpeedHoldTime) {
         this.blizzardForceAccelerationDirection *= -1;
@@ -401,14 +415,17 @@ class Player {
     this.blizzardForce +=
       this.blizzardForceAccelerationDirection * blizzardAccelerationMagnitude;
     // if the blizzard is faster than max blizzard force
-    if (abs(this.blizzardForce) > maxBlizzardForce) {
+    if (window.abs(this.blizzardForce) > maxBlizzardForce) {
       this.blizzardForce =
         maxBlizzardForce * this.blizzardForceAccelerationDirection;
     }
 
     this.snowImagePosition += this.blizzardForce * blizzardImageSpeedMultiplier;
 
-    if (!this.isOnGround && levels[this.currentLevelNo].isBlizzardLevel) {
+    if (
+      !this.isOnGround &&
+      Constants.levels[this.currentLevelNo].isBlizzardLevel
+    ) {
       this.currentSpeed.x += this.blizzardForce;
     }
   }
@@ -434,7 +451,7 @@ class Player {
 
         if (collidedLines.length > 1) {
           potentialLanding = true;
-          if (levels[this.currentLevelNo].isIceLevel) {
+          if (Constants.levels[this.currentLevelNo].isIceLevel) {
             this.currentSpeed.y = 0;
             if (this.IsMovingRight()) {
               this.currentSpeed.x -= iceFrictionAcceleration;
@@ -442,7 +459,7 @@ class Player {
               this.currentSpeed.x += iceFrictionAcceleration;
             }
           } else {
-            this.currentSpeed = createVector(0, 0);
+            this.currentSpeed = window.createVector(0, 0);
           }
           // print("potentail landing on nooooooo")
         } else {
@@ -455,8 +472,8 @@ class Player {
         // ok we gonna need to snap this shit
         this.currentPos.y = chosenLine.y1;
         if (!mutePlayers || testingSinglePlayer) {
-          bumpSound.playMode("sustain");
-          bumpSound.play();
+          Constants.bumpSound.playMode("sustain");
+          Constants.bumpSound.play();
         }
       }
     } else if (chosenLine.isVertical) {
@@ -480,8 +497,8 @@ class Player {
       if (!this.isOnGround) {
         this.hasBumped = true;
         if (!mutePlayers || testingSinglePlayer) {
-          bumpSound.playMode("sustain");
-          bumpSound.play();
+          Constants.bumpSound.playMode("sustain");
+          Constants.bumpSound.play();
         }
       }
     } else {
@@ -530,8 +547,8 @@ class Player {
         let correctionY = 0;
 
         if (playerCornerPos === null) {
-          print("fuck");
-          print(left, right, top, bottom);
+          // print("fuck");
+          // print(left, right, top, bottom);
           playerCornerPos = this.currentPos.copy();
 
           if (this.IsMovingDown()) {
@@ -550,21 +567,24 @@ class Player {
         // this.currentPos.y += correctionY>0 ? 1:-1;
 
         //get the current speed based on the dot product of the current veloctiy with the line
-        let lineVector = createVector(
+        let lineVector = window.createVector(
           chosenLine.x2 - chosenLine.x1,
           chosenLine.y2 - chosenLine.y1,
         );
         lineVector.normalize();
         // print(lineVector);
 
-        let speedMagnitude = p5.Vector.dot(this.currentSpeed, lineVector);
+        let speedMagnitude = window.p5.Vector.dot(
+          this.currentSpeed,
+          lineVector,
+        );
         // print(this.currentSpeed)
-        this.currentSpeed = p5.Vector.mult(lineVector, speedMagnitude);
+        this.currentSpeed = window.p5.Vector.mult(lineVector, speedMagnitude);
         // print(speedMagnitude,lineVector,this.currentSpeed)
         // this.currentSpeed.x = 0.5*gravity;
         // this.currentSpeed.y = 0.5*gravity;
         if (top) {
-          this.currentSpeed = createVector(0, 0);
+          this.currentSpeed = window.createVector(0, 0);
           this.isSlidding = false;
         }
       } else {
@@ -578,23 +598,23 @@ class Player {
         if (top) {
           // bounce off the point as if it were horizontal
           // print("top only");
-          let closestPointY = max(chosenLine.y1, chosenLine.y2);
+          let closestPointY = window.max(chosenLine.y1, chosenLine.y2);
           this.currentPos.y = closestPointY + 1;
           this.currentSpeed.y = 0 - this.currentSpeed.y / 2;
         }
         if (bottom) {
           //treat like floor
           // print("bottome only");
-          let closestPointY = min(chosenLine.y1, chosenLine.y2);
+          let closestPointY = window.min(chosenLine.y1, chosenLine.y2);
           // this.isOnGround = true
-          this.currentSpeed = createVector(0, 0);
+          this.currentSpeed = window.createVector(0, 0);
           // ok we gonna need to snap this shit
           this.currentPos.y = closestPointY - this.height - 1;
         }
         if (left) {
           // treat like a left wall
           // print('left only')
-          this.currentPos.x = max(chosenLine.x1, chosenLine.x2) + 1;
+          this.currentPos.x = window.max(chosenLine.x1, chosenLine.x2) + 1;
           if (this.IsMovingLeft())
             this.currentSpeed.x = 0 - this.currentSpeed.x / 2;
           if (!this.isOnGround) this.hasBumped = true;
@@ -603,7 +623,7 @@ class Player {
           // treat like a right wall
           // print("right only")
           this.currentPos.x =
-            min(chosenLine.x1, chosenLine.x2) - this.width - 1;
+            window.min(chosenLine.x1, chosenLine.x2) - this.width - 1;
           if (this.IsMovingRight())
             this.currentSpeed.x = 0 - this.currentSpeed.x / 2;
 
@@ -634,21 +654,21 @@ class Player {
 
   Show() {
     if (this.playersDead) return;
-    push();
+    window.push();
 
     this.RenderPlayerName();
 
     //if on the previous level and is up the top, then show
-    if (this.currentLevelNo === population.showingLevelNo - 1) {
-      if (this.currentPos.y < this.height) {
-        translate(0, height);
-      } else {
-        pop();
-        return;
-      }
-    }
+    // if (this.currentLevelNo === population.showingLevelNo - 1) {
+    //   if (this.currentPos.y < this.height) {
+    //     translate(0, height);
+    //   } else {
+    //     pop();
+    //     return;
+    //   }
+    // }
 
-    translate(this.currentPos.x, this.currentPos.y);
+    window.translate(this.currentPos.x, this.currentPos.y);
 
     // if (this.jumpHeld) {
     //     // this.height = this.height / 2
@@ -660,23 +680,29 @@ class Player {
     let imageToUse = this.GetImageToUseBasedOnState();
 
     if (!this.facingRight) {
-      push();
-      scale(-1, 1);
+      window.push();
+      window.scale(-1, 1);
       if (this.hasBumped) {
-        image(imageToUse, -70, -30);
-      } else if (imageToUse == jumpImage || imageToUse == fallImage) {
-        image(imageToUse, -70, -28);
+        window.image(imageToUse, -70, -30);
+      } else if (
+        imageToUse == Constants.jumpImage ||
+        imageToUse == Constants.fallImage
+      ) {
+        window.image(imageToUse, -70, -28);
       } else {
-        image(imageToUse, -70, -35);
+        window.image(imageToUse, -70, -35);
       }
-      pop();
+      window.pop();
     } else {
       if (this.hasBumped) {
-        image(imageToUse, -20, -30);
-      } else if (imageToUse == jumpImage || imageToUse == fallImage) {
-        image(imageToUse, -20, -28);
+        window.image(imageToUse, -20, -30);
+      } else if (
+        imageToUse == Constants.jumpImage ||
+        imageToUse == Constants.fallImage
+      ) {
+        window.image(imageToUse, -20, -28);
       } else {
-        image(imageToUse, -20, -35);
+        window.image(imageToUse, -20, -35);
       }
     }
     //
@@ -690,22 +716,22 @@ class Player {
     // if (this.jumpHeld) {
     //     this.height = this.height * 2
     // }
-    pop();
+    window.pop();
 
     //show snow
     if (
-      levels[this.currentLevelNo].isBlizzardLevel &&
+      Constants.levels[this.currentLevelNo].isBlizzardLevel &&
       (!alreadyShowingSnow || testingSinglePlayer)
     ) {
       let snowDrawPosition = this.snowImagePosition;
       while (snowDrawPosition <= 0) {
-        snowDrawPosition += width;
+        snowDrawPosition += Constants.width;
       }
-      snowDrawPosition = snowDrawPosition % width;
+      snowDrawPosition = snowDrawPosition % Constants.width;
 
       // let snowYPosition = (frameCount/2) % height;
-      image(snowImage, snowDrawPosition, 0);
-      image(snowImage, snowDrawPosition - width, 0);
+      window.image(snowImage, snowDrawPosition, 0);
+      window.image(snowImage, snowDrawPosition - Constants.width, 0);
       // image(snowImage, snowDrawPosition, snowYPosition- height);
       // image(snowImage, snowDrawPosition - width, snowYPosition- height);
       alreadyShowingSnow = true;
@@ -726,26 +752,31 @@ class Player {
     );
     // print(this.jumpTimer,minJumpSpeed,maxJumpSpeed,verticalJumpSpeed )
     if (this.leftHeld) {
-      this.currentSpeed = createVector(
+      this.currentSpeed = window.createVector(
         -jumpSpeedHorizontal,
         -verticalJumpSpeed,
       );
       this.facingRight = false;
     } else if (this.rightHeld) {
-      this.currentSpeed = createVector(jumpSpeedHorizontal, -verticalJumpSpeed);
+      this.currentSpeed = window.createVector(
+        jumpSpeedHorizontal,
+        -verticalJumpSpeed,
+      );
       this.facingRight = true;
     } else {
-      this.currentSpeed = createVector(0, -verticalJumpSpeed);
+      this.currentSpeed = window.createVector(0, -verticalJumpSpeed);
     }
     this.hasFallen = false;
     this.isOnGround = false;
     // print(this.jumpTimer);
     this.jumpTimer = 0;
     this.jumpStartingHeight =
-      height - this.currentPos.y + height * this.currentLevelNo;
+      Constants.height -
+      this.currentPos.y +
+      Constants.height * this.currentLevelNo;
     if (!mutePlayers || testingSinglePlayer) {
-      jumpSound.playMode("sustain");
-      jumpSound.play();
+      Constants.jumpSound.playMode("sustain");
+      Constants.jumpSound.play();
     }
   }
 
@@ -850,19 +881,19 @@ class Player {
 
         if (leftCollision[0])
           collisionInfo.collisionPoints.push(
-            createVector(leftCollision[1], leftCollision[2]),
+            window.createVector(leftCollision[1], leftCollision[2]),
           );
         if (rightCollision[0])
           collisionInfo.collisionPoints.push(
-            createVector(rightCollision[1], rightCollision[2]),
+            window.createVector(rightCollision[1], rightCollision[2]),
           );
         if (topCollision[0])
           collisionInfo.collisionPoints.push(
-            createVector(topCollision[1], topCollision[2]),
+            window.createVector(topCollision[1], topCollision[2]),
           );
         if (bottomCollision[0])
           collisionInfo.collisionPoints.push(
-            createVector(bottomCollision[1], bottomCollision[2]),
+            window.createVector(bottomCollision[1], bottomCollision[2]),
           );
 
         l.diagonalCollisionInfo = collisionInfo;
@@ -896,10 +927,10 @@ class Player {
   }
 
   GetImageToUseBasedOnState() {
-    if (this.jumpHeld && this.isOnGround) return squatImage;
-    if (this.hasFallen) return fallenImage;
-    if (this.hasBumped) return oofImage;
-    if (this.currentSpeed.y < 0) return jumpImage;
+    if (this.jumpHeld && this.isOnGround) return Constants.squatImage;
+    if (this.hasFallen) return Constants.fallenImage;
+    if (this.hasBumped) return Constants.oofImage;
+    if (this.currentSpeed.y < 0) return Constants.jumpImage;
     if (this.isRunning) {
       this.currentRunIndex += 1;
       if (this.currentRunIndex >= this.runCycle.length)
@@ -907,8 +938,8 @@ class Player {
       return this.runCycle[this.currentRunIndex];
     }
 
-    if (this.isOnGround) return idleImage;
-    return fallImage;
+    if (this.isOnGround) return Constants.idleImage;
+    return Constants.fallImage;
   }
 
   UpdatePlayerSlide(currentLines) {
@@ -923,7 +954,7 @@ class Player {
   UpdatePlayerRun(currentLines) {
     this.isRunning = false;
     let runAllowed =
-      !levels[this.currentLevelNo].isBlizzardLevel ||
+      !Constants.levels[this.currentLevelNo].isBlizzardLevel ||
       this.currentLevelNo === 31 ||
       this.currentLevelNo == 25;
     if (this.isOnGround) {
@@ -936,25 +967,25 @@ class Player {
           this.hasFallen = false;
           this.isRunning = true;
           this.facingRight = true;
-          if (!levels[this.currentLevelNo].isIceLevel) {
-            this.currentSpeed = createVector(runSpeed, 0);
+          if (!Constants.levels[this.currentLevelNo].isIceLevel) {
+            this.currentSpeed = window.createVector(runSpeed, 0);
           } else {
             this.currentSpeed.x += playerIceRunAcceleration;
-            this.currentSpeed.x = min(runSpeed, this.currentSpeed.x);
+            this.currentSpeed.x = window.min(runSpeed, this.currentSpeed.x);
           }
         } else if (this.leftHeld && runAllowed) {
           this.hasFallen = false;
           this.isRunning = true;
           this.facingRight = false;
-          if (!levels[this.currentLevelNo].isIceLevel) {
-            this.currentSpeed = createVector(-runSpeed, 0);
+          if (!Constants.levels[this.currentLevelNo].isIceLevel) {
+            this.currentSpeed = window.createVector(-runSpeed, 0);
           } else {
             this.currentSpeed.x -= playerIceRunAcceleration;
-            this.currentSpeed.x = max(0 - runSpeed, this.currentSpeed.x);
+            this.currentSpeed.x = window.max(0 - runSpeed, this.currentSpeed.x);
           }
         } else {
-          if (!levels[this.currentLevelNo].isIceLevel) {
-            this.currentSpeed = createVector(0, 0);
+          if (!Constants.levels[this.currentLevelNo].isIceLevel) {
+            this.currentSpeed = window.createVector(0, 0);
           } else {
             this.currentSpeed.y = 0;
             if (this.IsMovingRight()) {
@@ -962,14 +993,14 @@ class Player {
             } else {
               this.currentSpeed.x += iceFrictionAcceleration;
             }
-            if (abs(this.currentSpeed.x) <= iceFrictionAcceleration) {
+            if (window.abs(this.currentSpeed.x) <= iceFrictionAcceleration) {
               this.currentSpeed.x = 0;
             }
           }
         }
       } else {
-        if (!levels[this.currentLevelNo].isIceLevel) {
-          this.currentSpeed = createVector(0, 0);
+        if (!Constants.levels[this.currentLevelNo].isIceLevel) {
+          this.currentSpeed = window.createVector(0, 0);
         } else {
           this.currentSpeed.y = 0;
           if (this.IsMovingRight()) {
@@ -977,7 +1008,7 @@ class Player {
           } else {
             this.currentSpeed.x += iceFrictionAcceleration;
           }
-          if (abs(this.currentSpeed.x) <= iceFrictionAcceleration) {
+          if (window.abs(this.currentSpeed.x) <= iceFrictionAcceleration) {
             this.currentSpeed.x = 0;
           }
         }
@@ -1072,27 +1103,27 @@ class Player {
 
     if (collidedLines.length > 1) {
       for (let l of collidedLines) {
-        let directedCorrection = createVector(0, 0);
+        let directedCorrection = window.createVector(0, 0);
         let correction = 10000;
         if (l.isHorizontal) {
           if (this.IsMovingDown()) {
             directedCorrection.y = l.y1 - (this.currentPos.y + this.height);
 
-            correction = abs(directedCorrection);
-            correction = abs(this.currentPos.y - (l.y1 - this.height));
+            correction = window.abs(directedCorrection);
+            correction = window.abs(this.currentPos.y - (l.y1 - this.height));
           } else {
             // if moving up then we've hit a roof and we bounce off
             directedCorrection.y = l.y1 - this.currentPos.y;
-            correction = abs(this.currentPos.y - l.y1);
+            correction = window.abs(this.currentPos.y - l.y1);
           }
         } else if (l.isVertical) {
           if (this.IsMovingRight()) {
             directedCorrection.x = l.x1 - (this.currentPos.x + this.width);
-            correction = abs(this.currentPos.x - (l.x1 - this.width));
+            correction = window.abs(this.currentPos.x - (l.x1 - this.width));
           } else {
             directedCorrection.x = l.x1 - this.currentPos.x;
 
-            correction = abs(this.currentPos.x - l.x1);
+            correction = window.abs(this.currentPos.x - l.x1);
           }
         } else {
           //this bitch diagonal
@@ -1128,8 +1159,8 @@ class Player {
             }
 
             if (playerCornerPos === null) {
-              print("fuck");
-              print(left, right, top, bottom);
+              // print("fuck");
+              // print(left, right, top, bottom);
               playerCornerPos = this.currentPos.copy();
 
               if (this.IsMovingDown()) {
@@ -1142,7 +1173,7 @@ class Player {
 
             directedCorrection.x = midpoint.x - playerCornerPos.x;
             directedCorrection.y = midpoint.y - playerCornerPos.y;
-            correction = dist(
+            correction = window.dist(
               playerCornerPos.x,
               playerCornerPos.y,
               midpoint.x,
@@ -1157,30 +1188,34 @@ class Player {
             let playerCornerPos = null;
             if (top) {
               // bounce off the point as if it were horizontal
-              let closestPointY = max(l.y1, l.y2);
+              let closestPointY = window.max(l.y1, l.y2);
               directedCorrection.y = closestPointY - this.currentPos.y;
 
-              correction = abs(this.currentPos.y - closestPointY);
+              correction = window.abs(this.currentPos.y - closestPointY);
             }
             if (bottom) {
               //treat like floor
-              let closestPointY = min(l.y1, l.y2);
+              let closestPointY = window.min(l.y1, l.y2);
               directedCorrection.y =
                 closestPointY - (this.currentPos.y + this.height);
-              correction = abs(this.currentPos.y + this.height - closestPointY);
+              correction = window.abs(
+                this.currentPos.y + this.height - closestPointY,
+              );
             }
             if (left) {
               // treat like a left wall
-              let closestPointX = max(l.x1, l.x2);
+              let closestPointX = window.max(l.x1, l.x2);
               directedCorrection.x = closestPointX - this.currentPos.x;
-              correction = abs(this.currentPos.x - closestPointX);
+              correction = window.abs(this.currentPos.x - closestPointX);
             }
             if (right) {
               // treat like a left wall
-              let closestPointX = min(l.x1, l.x2);
+              let closestPointX = window.min(l.x1, l.x2);
               directedCorrection.x =
                 closestPointX - (this.currentPos.x + this.width);
-              correction = abs(this.currentPos.x + this.width - closestPointX);
+              correction = window.abs(
+                this.currentPos.x + this.width - closestPointX,
+              );
             }
           }
         }
@@ -1208,8 +1243,8 @@ class Player {
     if (this.currentPos.y < -this.height) {
       //we are at the top of the screen
       this.currentLevelNo += 1;
-      this.currentPos.y += height;
-    } else if (this.currentPos.y > height - this.height) {
+      this.currentPos.y += Constants.height;
+    } else if (this.currentPos.y > Constants.height - this.height) {
       if (this.currentLevelNo === 0) {
         //oh no
         // print("fuck me hes goin under")
@@ -1218,47 +1253,21 @@ class Player {
         this.hasFinishedInstructions = true;
       }
       this.currentLevelNo -= 1;
-      this.currentPos.y -= height;
+      this.currentPos.y -= Constants.height;
 
       if (
         !this.hasFinishedInstructions &&
         this.currentLevelNo < this.bestLevelReached - 1
       ) {
         this.fellToPreviousLevel = true;
-        this.fellOnActionNo = this.brain.currentInstructionNumber;
+        // this.fellOnActionNo = this.brain.currentInstructionNumber;
         this.hasFinishedInstructions = true;
-      }
-    }
-  }
-
-  UpdateAIAction() {
-    // ran every frame
-    if (this.isWaitingToStartAction && this.isOnGround) {
-      this.isWaitingToStartAction = false;
-    }
-
-    //if the action hasnt started yet then start it
-    //also if the ai is not on the ground and the action has already started then end the action
-    if (this.isOnGround && !this.actionStarted) {
-      this.currentAction = this.brain.getNextAction();
-      if (this.currentAction === null) {
-        this.hasFinishedInstructions = true;
-        return;
-      }
-      this.StartCurrentAction();
-      this.actionStarted = true;
-    } else if (this.actionStarted) {
-      //if the action has been held for long enough then we end the current action
-      this.aiActionTimer += 1;
-      if (this.aiActionTimer >= this.aiActionMaxTime) {
-        this.EndCurrentAction();
-        this.actionStarted = false;
       }
     }
   }
 
   StartCurrentAction() {
-    this.aiActionMaxTime = floor(this.currentAction.holdTime * 30);
+    this.aiActionMaxTime = window.floor(this.currentAction.holdTime * 30);
     this.aiActionTimer = 0;
     if (this.currentAction.isJump) {
       this.jumpHeld = true;
@@ -1283,14 +1292,18 @@ class Player {
   }
 
   GetGlobalHeight() {
-    return height - this.currentPos.y + height * this.currentLevelNo;
+    return (
+      Constants.height -
+      this.currentPos.y +
+      Constants.height * this.currentLevelNo
+    );
   }
 
   playerLanded() {
     // if moving down then weve landed
     this.isOnGround = true;
     // if were on an ice level then we slide instead
-    if (levels[this.currentLevelNo].isIceLevel) {
+    if (Constants.levels[this.currentLevelNo].isIceLevel) {
       this.currentSpeed.y = 0;
       if (this.IsMovingRight()) {
         this.currentSpeed.x -= iceFrictionAcceleration;
@@ -1298,33 +1311,35 @@ class Player {
         this.currentSpeed.x += iceFrictionAcceleration;
       }
     } else {
-      this.currentSpeed = createVector(0, 0);
+      this.currentSpeed = window.createVector(0, 0);
     }
 
     this.isSlidding = false;
     this.hasBumped = false;
 
     if (
-      this.jumpStartingHeight - height / 2 >
-      height - this.currentPos.y + height * this.currentLevelNo
+      this.jumpStartingHeight - Constants.height / 2 >
+      Constants.height -
+        this.currentPos.y +
+        Constants.height * this.currentLevelNo
     ) {
       this.hasFallen = true;
     }
 
     if (this.GetGlobalHeight() > this.bestHeightReached) {
       this.bestHeightReached = this.GetGlobalHeight();
-      this.reachedHeightAtStepNo = this.brain.currentInstructionNumber;
+      // this.reachedHeightAtStepNo = this.brain.currentInstructionNumber;
 
       if (this.bestLevelReached < this.currentLevelNo) {
         this.bestLevelReached = this.currentLevelNo;
-        this.bestLevelReachedOnActionNo = this.brain.currentInstructionNumber;
+        // this.bestLevelReachedOnActionNo = this.brain.currentInstructionNumber;
         // this.playerStateAtStartOfBestLevel.getStateFromPlayer(this);
         this.getNewPlayerStateAtEndOfUpdate = true;
 
         //setup coins
         this.numberOfCoinsPickedUp = 0;
         this.progressionCoinPickedUp = false;
-        if (!levels[this.currentLevelNo].hasProgressionCoins) {
+        if (!Constants.levels[this.currentLevelNo].hasProgressionCoins) {
           this.progressionCoinPickedUp = true;
         }
         this.coinsPickedUpIndexes = [];
@@ -1338,17 +1353,17 @@ class Player {
       !this.hasFinishedInstructions
     ) {
       this.fellToPreviousLevel = true;
-      this.fellOnActionNo = this.brain.currentInstructionNumber;
+      // this.fellOnActionNo = this.brain.currentInstructionNumber;
       this.hasFinishedInstructions = true;
     }
 
     if (!mutePlayers || testingSinglePlayer) {
       if (this.hasFallen) {
-        fallSound.playMode("sustain");
-        fallSound.play();
+        Constants.fallSound.playMode("sustain");
+        Constants.fallSound.play();
       } else {
-        landSound.playMode("sustain");
-        landSound.play();
+        Constants.landSound.playMode("sustain");
+        Constants.landSound.play();
       }
     }
   }
@@ -1357,7 +1372,7 @@ class Player {
     if (this.currentLevelNo < this.bestLevelReached) {
       return;
     }
-    let currentLevel = levels[this.currentLevelNo];
+    let currentLevel = Constants.levels[this.currentLevelNo];
     for (let i = 0; i < currentLevel.coins.length; i++) {
       if (!this.coinsPickedUpIndexes.includes(i)) {
         if (currentLevel.coins[i].collidesWithPlayer(this)) {
@@ -1365,13 +1380,13 @@ class Player {
             if (this.isOnGround) {
               this.coinsPickedUpIndexes.push(i);
               this.numberOfCoinsPickedUp += 1;
-              print("COLLISION COIN THING");
+              // print("COLLISION COIN THING");
             }
           } else {
             this.coinsPickedUpIndexes.push(i);
             this.numberOfCoinsPickedUp += 0; // dont increase coins picked up
             this.progressionCoinPickedUp = true;
-            print("COLLISION Progress coin");
+            // print("COLLISION Progress coin");
           }
         }
       }
@@ -1393,3 +1408,5 @@ function AreLinesColliding(x1, y1, x2, y2, x3, y3, x4, y4) {
   }
   return [false, 0, 0];
 }
+
+export { Player };

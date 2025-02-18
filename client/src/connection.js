@@ -55,7 +55,7 @@ class ClientConnection {
       const msg = JSON.parse(event.data);
 
       if (msg.Type === "action") {
-        onActionReceive?.(msg);
+        this.onActionReceive?.(msg);
         return;
       }
       console.log("Message: ");
@@ -120,5 +120,4 @@ class ClientConnection {
   }
 }
 
-// workaround for non module js files
-window.ClientConnection = ClientConnection;
+export { ClientConnection };

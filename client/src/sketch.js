@@ -1,82 +1,43 @@
-let width = 0;
-let height = 0;
-let canvas = null;
-
-let player = null;
-let lines = [];
-let backgroundImage = null;
-
-let creatingLines = false;
-
-let idleImage = null;
-let squatImage = null;
-let jumpImage = null;
-let oofImage = null;
-let run1Image = null;
-let run2Image = null;
-let run3Image = null;
-let fallenImage = null;
-let fallImage = null;
-let showingLines = false;
-let showingCoins = false;
-let levelImages = [];
-
-let placingPlayer = false;
-let placingCoins = false;
-let playerPlaced = false;
-
-let testingSinglePlayer = true;
-
-let fallSound = null;
-let jumpSound = null;
-let bumpSound = null;
-let landSound = null;
-
-let snowImage = null;
-
-let population = null;
-let levelDrawn = false;
-
-let startingPlayerActions = 5;
-let increaseActionsByAmount = 5;
-let increaseActionsEveryXGenerations = 10;
-let evolationSpeed = 1;
-
-let font;
-let connection;
-const joinedPlayers = new Set([]);
-// Stream client player data to server on connect
-let streamInterval;
-// The name of player
-let playerName = "";
+import { ClientConnection } from "./connection";
+import { setupLevels } from "./LevelSetupFunction";
+import { Constants } from "./constants.js";
+import { Line } from "./Line";
+import { createModal, getSessionId } from "./utils";
+import { Player } from "./Player.js";
 
 function preload() {
-  backgroundImage = loadImage("src/assets/images/levelImages/1.png");
-  idleImage = loadImage("src/assets/images/poses/idle.png");
-  squatImage = loadImage("src/assets/images/poses/squat.png");
-  jumpImage = loadImage("src/assets/images/poses/jump.png");
-  oofImage = loadImage("src/assets/images/poses/oof.png");
-  run1Image = loadImage("src/assets/images/poses/run1.png");
-  run2Image = loadImage("src/assets/images/poses/run2.png");
-  run3Image = loadImage("src/assets/images/poses/run3.png");
-  fallenImage = loadImage("src/assets/images/poses/fallen.png");
-  fallImage = loadImage("src/assets/images/poses/fall.png");
+  Constants.backgroundImage = window.loadImage(
+    "src/assets/images/levelImages/1.png",
+  );
+  Constants.idleImage = window.loadImage("src/assets/images/poses/idle.png");
+  Constants.squatImage = window.loadImage("src/assets/images/poses/squat.png");
+  Constants.jumpImage = window.loadImage("src/assets/images/poses/jump.png");
+  Constants.oofImage = window.loadImage("src/assets/images/poses/oof.png");
+  Constants.run1Image = window.loadImage("src/assets/images/poses/run1.png");
+  Constants.run2Image = window.loadImage("src/assets/images/poses/run2.png");
+  Constants.run3Image = window.loadImage("src/assets/images/poses/run3.png");
+  Constants.fallenImage = window.loadImage(
+    "src/assets/images/poses/fallen.png",
+  );
+  Constants.fallImage = window.loadImage("src/assets/images/poses/fall.png");
 
-  snowImage = loadImage("src/assets/images/snow3.png");
+  Constants.snowImage = window.loadImage("src/assets/images/snow3.png");
 
   for (let i = 1; i <= 43; i++) {
-    levelImages.push(loadImage("src/assets/images/levelImages/" + i + ".png"));
+    Constants.levelImages.push(
+      window.loadImage("src/assets/images/levelImages/" + i + ".png"),
+    );
   }
 
-  jumpSound = loadSound("src/assets/sounds/jump.mp3");
-  fallSound = loadSound("src/assets/sounds/fall.mp3");
-  bumpSound = loadSound("src/assets/sounds/bump.mp3");
-  landSound = loadSound("src/assets/sounds/land.mp3");
+  Constants.jumpSound = window.loadSound("src/assets/sounds/jump.mp3");
+  Constants.fallSound = window.loadSound("src/assets/sounds/fall.mp3");
+  Constants.bumpSound = window.loadSound("src/assets/sounds/bump.mp3");
+  Constants.landSound = window.loadSound("src/assets/sounds/land.mp3");
 
-  font = loadFont("src/assets/fonts/ttf_alkhemikal.ttf");
+  Constants.font = window.loadFont("src/assets/fonts/ttf_alkhemikal.ttf");
 }
 
-// Spawn main player & joined players on connection
+// Spawn main Constants.player & joined players on connection
 const onSessionJoin = (conn, connType, msg) => {
   const clientId = conn.getClientId();
   const pName = msg.Data?.PlayerName;
@@ -87,58 +48,58 @@ const onSessionJoin = (conn, connType, msg) => {
     window.location.href = `${window.location.href}${sessionId}`;
   }
 
-  if (connType === "start" && !player) {
-    player = new Player(clientId, pName);
+  if (connType === "start" && !Constants.player) {
+    Constants.player = new Player(clientId, pName);
 
     const connections = msg.Data?.Connections;
     for (const [connectionId, connectionName] of Object.entries(connections)) {
       if (connectionId === clientId) {
         continue;
       }
-      joinedPlayers.add(new Player(connectionId, connectionName));
+      Constants.joinedPlayers.add(new Player(connectionId, connectionName));
     }
 
-    streamInterval = setInterval(
+    Constants.streamInterval = setInterval(
       () => {
         if (!conn.connected) {
-          clearInterval(streamInterval);
+          clearInterval(Constants.streamInterval);
           return;
         }
 
         const data = {
-          x: player.currentPos.x,
-          y: player.currentPos.y,
-          leftHeld: player.leftHeld,
-          rightHeld: player.rightHeld,
-          jumpHeld: player.jumpHeld,
-          facingRight: player.facingRight,
-          currentLevelNo: player.currentLevelNo,
-          isOnGround: player.isOnGround,
-          isSlidding: player.isSlidding,
-          currentSpeedX: player.currentSpeed.x,
-          currentSpeedY: player.currentSpeed.y,
-          sliddingRight: player.sliddingRight,
-          hasFallen: player.hasFallen,
+          x: Constants.player.currentPos.x,
+          y: Constants.player.currentPos.y,
+          leftHeld: Constants.player.leftHeld,
+          rightHeld: Constants.player.rightHeld,
+          jumpHeld: Constants.player.jumpHeld,
+          facingRight: Constants.player.facingRight,
+          currentLevelNo: Constants.player.currentLevelNo,
+          isOnGround: Constants.player.isOnGround,
+          isSlidding: Constants.player.isSlidding,
+          currentSpeedX: Constants.player.currentSpeed.x,
+          currentSpeedY: Constants.player.currentSpeed.y,
+          sliddingRight: Constants.player.sliddingRight,
+          hasFallen: Constants.player.hasFallen,
         };
         conn.send({ Type: "action", Data: data });
       },
-      // send 20 times per second
-      50,
+      // send 25 times per second
+      40,
     );
 
     return;
   }
 
-  if ([...joinedPlayers].every((p) => p.id !== msg.ClientId)) {
-    joinedPlayers.add(new Player(msg.ClientId, pName));
+  if ([...Constants.joinedPlayers].every((p) => p.id !== msg.ClientId)) {
+    Constants.joinedPlayers.add(new Player(msg.ClientId, pName));
   }
 };
 
 // Remove disconnected players
 const onSessionQuit = (clientId) => {
-  joinedPlayers.forEach((p) => {
+  Constants.joinedPlayers.forEach((p) => {
     if (p.id === clientId || !clientId) {
-      joinedPlayers.delete(p);
+      Constants.joinedPlayers.delete(p);
     }
   });
 };
@@ -148,11 +109,11 @@ const onActionReceive = (msg) => {
   const id = msg.ClientId;
   const data = msg.Data;
 
-  const updatePlayer = [...joinedPlayers].find((p) => p.id === id);
+  const updatePlayer = [...Constants.joinedPlayers].find((p) => p.id === id);
   if (!updatePlayer) {
     return;
   }
-  updatePlayer.currentPos = createVector(data.x, data.y);
+  updatePlayer.currentPos = window.createVector(data.x, data.y);
   updatePlayer.rightHeld = data.rightHeld;
   updatePlayer.leftHeld = data.leftHeld;
   updatePlayer.jumpHeld = data.jumpHeld;
@@ -174,17 +135,17 @@ const onConnected = (conn) => {
     SessionId: sessionSlug?.length > 0 ? sessionSlug : undefined,
     Data: {
       SessionType: sessionSlug?.length > 0 ? "connect" : "create",
-      PlayerName: playerName,
+      PlayerName: Constants.playerName,
     },
   };
   conn.send(connectMessage);
 };
 
 function setupCanvas() {
-  canvas = createCanvas(1200, 950);
-  canvas.parent("canvas");
-  width = canvas.width;
-  height = canvas.height - 50;
+  Constants.canvas = window.createCanvas(1200, 950);
+  Constants.canvas.parent("canvas");
+  Constants.width = Constants.canvas.width;
+  Constants.height = Constants.canvas.height - 50;
 }
 
 function setup() {
@@ -198,171 +159,183 @@ function setup() {
     }
 
     hide();
-    playerName = inputValue.replace(/ /g, "");
-    connection = new ClientConnection({
+    Constants.playerName = inputValue.replace(/ /g, "");
+    Constants.connection = new ClientConnection({
       onConnected,
       onSessionJoin,
       onSessionQuit,
       onActionReceive,
     });
   });
+  // createChatWindow();
   setupCanvas();
 
-  population = new Population(600); // ai shit
   setupLevels();
-  jumpSound.playMode("sustain");
-  fallSound.playMode("sustain");
-  bumpSound.playMode("sustain");
-  landSound.playMode("sustain");
+  Constants.jumpSound.playMode("sustain");
+  Constants.fallSound.playMode("sustain");
+  Constants.bumpSound.playMode("sustain");
+  Constants.landSound.playMode("sustain");
 }
 
 function drawMousePosition() {
   let snappedX = mouseX - (mouseX % 20);
   let snappedY = mouseY - (mouseY % 20);
-  push();
+  window.push();
 
-  fill(255, 0, 0);
-  noStroke();
-  ellipse(snappedX, snappedY, 5);
+  window.fill(255, 0, 0);
+  window.noStroke();
+  window.ellipse(snappedX, snappedY, 5);
 
-  if (mousePos1 != null) {
-    stroke(255, 0, 0);
-    strokeWeight(5);
-    line(mousePos1.x, mousePos1.y, snappedX, snappedY);
+  if (Constants.mousePos1 != null) {
+    window.stroke(255, 0, 0);
+    window.strokeWeight(5);
+    window.line(
+      Constants.mousePos1.x,
+      Constants.mousePos1.y,
+      snappedX,
+      snappedY,
+    );
   }
 
-  pop();
+  window.pop();
 }
 
-let levelNumber = 0;
-
 function draw() {
-  background(10);
-  push();
-  translate(0, 50);
+  window.background(10);
+  window.push();
+  window.translate(0, 50);
 
-  if (player) {
-    image(levels[player.currentLevelNo].levelImage, 0, 0);
-    levels[player.currentLevelNo].show();
-    player.Update();
-    player.Show();
+  if (Constants.player) {
+    window.image(
+      Constants.levels[Constants.player.currentLevelNo].levelImage,
+      0,
+      0,
+    );
+    Constants.levels[Constants.player.currentLevelNo].show();
+    Constants.player.Update();
+    Constants.player.Show();
   } else {
-    image(levels[0].levelImage, 0, 0);
-    levels[0].show();
+    // something fails here - levels levelImage - undefined
+    window.image(Constants.levels[0]?.levelImage, 0, 0);
+    Constants.levels[0].show();
   }
 
-  joinedPlayers.forEach((p) => {
+  Constants.joinedPlayers.forEach((p) => {
     p.Update();
 
-    // show joined player only on the same level
-    if (player?.currentLevelNo === p.currentLevelNo) {
+    // show joined Constants.player only on the same level
+    if (Constants.player?.currentLevelNo === p.currentLevelNo) {
       p.Show();
     }
   });
 
-  if (showingLines || creatingLines) showLines();
+  if (Constants.showingLines || Constants.creatingLines) showLines();
 
-  if (creatingLines) drawMousePosition();
+  if (Constants.creatingLines) drawMousePosition();
 
-  if (frameCount % 15 === 0) {
-    previousFrameRate = floor(getFrameRate());
+  if (window.frameCount % 15 === 0) {
+    Constants.previousFrameRate = window.floor(window.getFrameRate());
   }
 
-  pop();
+  window.pop();
 
-  fill(0);
-  noStroke();
-  rect(0, 0, width, 50);
+  window.fill(0);
+  window.noStroke();
+  window.rect(0, 0, Constants.width, 50);
 
-  textSize(32);
-  textFont(font);
-  fill(255, 255, 255);
+  window.textSize(32);
+  window.textFont(Constants.font);
+  window.fill(255, 255, 255);
   // text("FPS: " + previousFrameRate, width - 160, 35);
-  text(`Session: ${connection ? connection.getSessionId() : "no"}`, 20, 35);
-  const isConnected = !!connection?.getIsConnected();
-  fill(isConnected ? 0 : 255, isConnected ? 255 : 0, 0);
-  text(isConnected ? "Connected" : "Disconnected", width - 160, 35);
+  window.text(
+    `Session: ${Constants.connection ? Constants.connection.getSessionId() : "no"}`,
+    20,
+    35,
+  );
+  const isConnected = !!Constants.connection?.getIsConnected();
+  window.fill(isConnected ? 0 : 255, isConnected ? 255 : 0, 0);
+  window.text(
+    isConnected ? "Connected" : "Disconnected",
+    Constants.width - 160,
+    35,
+  );
 }
 
-let previousFrameRate = 60;
-
 function showLevel(levelNumberToShow) {
-  levels[levelNumberToShow].show();
+  Constants.levels[levelNumberToShow].show();
 }
 
 function showLines() {
-  if (creatingLines) {
-    for (let l of lines) {
+  if (Constants.creatingLines) {
+    for (let l of Constants.lines) {
       l.Show();
     }
   } else {
-    for (let l of levels[player.currentLevelNo].lines) {
+    for (let l of Constants.levels[Constants.player.currentLevelNo].lines) {
       l.Show();
     }
   }
 }
 
 function keyPressed() {
-  if (!player) {
+  if (!Constants.player) {
     return;
   }
 
   switch (key) {
     case " ":
-      player.jumpHeld = true;
+      Constants.player.jumpHeld = true;
       break;
     case "R":
-      player.ResetPlayer();
-      joinedPlayers.forEach((p) => {
+      Constants.player.ResetPlayer();
+      Constants.joinedPlayers.forEach((p) => {
         p.ResetPlayer();
       });
       break;
     case "S":
-      bumpSound.stop();
-      jumpSound.stop();
-      landSound.stop();
-      fallSound.stop();
+      Constants.bumpSound.stop();
+      Constants.jumpSound.stop();
+      Constants.landSound.stop();
+      Constants.fallSound.stop();
       break;
   }
 
   switch (keyCode) {
     case LEFT_ARROW:
-      player.leftHeld = true;
+      Constants.player.leftHeld = true;
       break;
     case RIGHT_ARROW:
-      player.rightHeld = true;
+      Constants.player.rightHeld = true;
       break;
   }
 }
-let replayingBestPlayer = false;
-let cloneOfBestPlayer = null;
 
 function keyReleased() {
-  if (!player) {
+  if (!Constants.player) {
     return;
   }
 
   switch (key) {
-    case "B":
-      replayingBestPlayer = true;
-      cloneOfBestPlayer =
-        population.cloneOfBestPlayerFromPreviousGeneration.clone();
-      evolationSpeed = 1;
-      mutePlayers = false;
-      break;
+    // case "B":
+    //   replayingBestPlayer = true;
+    //   cloneOfBestPlayer =
+    //     population.cloneOfBestPlayerFromPreviousGeneration.clone();
+    //   evolationSpeed = 1;
+    //   mutePlayers = false;
+    //   break;
 
     case " ":
-      if (!creatingLines && player.jumpHeld) {
-        player.jumpHeld = false;
-        player.Jump();
+      if (!Constants.creatingLines && Constants.player.jumpHeld) {
+        Constants.player.jumpHeld = false;
+        Constants.player.Jump();
       }
       break;
     case "R":
-      if (creatingLines) {
-        lines = [];
-        linesString = "";
-        mousePos1 = null;
-        mousePos2 = null;
+      if (Constants.creatingLines) {
+        Constants.lines = [];
+        Constants.linesString = "";
+        Constants.mousePos1 = null;
+        Constants.mousePos2 = null;
       }
       break;
     case "N":
@@ -377,75 +350,93 @@ function keyReleased() {
         mousePos1 = null;
         mousePos2 = null;
       } else {
-        player.currentLevelNo += 1;
-        print(player.currentLevelNo);
+        Constants.player.currentLevelNo += 1;
+        print(Constants.player.currentLevelNo);
       }
       break;
     case "D":
-      if (creatingLines) {
-        mousePos1 = null;
-        mousePos2 = null;
+      if (Constants.creatingLines) {
+        Constants.mousePos1 = null;
+        Constants.mousePos2 = null;
       }
   }
 
   switch (keyCode) {
     case LEFT_ARROW:
-      player.leftHeld = false;
+      Constants.player.leftHeld = false;
       break;
     case RIGHT_ARROW:
-      player.rightHeld = false;
+      Constants.player.rightHeld = false;
       break;
     case DOWN_ARROW:
-      evolationSpeed = constrain(evolationSpeed - 1, 0, 50);
-      print(evolationSpeed);
-
+      Constants.evolationSpeed = window.constrain(
+        Constants.evolationSpeed - 1,
+        0,
+        50,
+      );
       break;
     case UP_ARROW:
-      evolationSpeed = constrain(evolationSpeed + 1, 0, 50);
-      print(evolationSpeed);
+      Constants.evolationSpeed = window.constrain(
+        Constants.evolationSpeed + 1,
+        0,
+        50,
+      );
+      // print(evolationSpeed);
       break;
   }
 }
 
-let mousePos1 = null;
-let mousePos2 = null;
-let linesString = "";
-
 function mouseClicked() {
-  if (creatingLines) {
-    let snappedX = mouseX - (mouseX % 20);
-    let snappedY = mouseY - (mouseY % 20);
-    if (mousePos1 == null) {
-      mousePos1 = createVector(snappedX, snappedY);
+  if (Constants.creatingLines) {
+    let snappedX = window.mouseX - (window.mouseX % 20);
+    let snappedY = window.mouseY - (window.mouseY % 20);
+    if (Constants.mousePos1 == null) {
+      Constants.mousePos1 = window.createVector(snappedX, snappedY);
     } else {
-      mousePos2 = createVector(snappedX, snappedY);
+      Constants.mousePos2 = window.createVector(snappedX, snappedY);
       // print('tempLevel.lines.push(new Line(' + mousePos1.x + ',' + mousePos1.y + ',' + mousePos2.x + ',' + mousePos2.y + '));');
-      lines.push(new Line(mousePos1.x, mousePos1.y, mousePos2.x, mousePos2.y));
+      lines.push(
+        new Line(
+          Constants.mousePos1.x,
+          Constants.mousePos1.y,
+          Constants.mousePos2.x,
+          Constants.mousePos2.y,
+        ),
+      );
       linesString +=
         "\ntempLevel.lines.push(new Line(" +
-        mousePos1.x +
+        Constants.mousePos1.x +
         "," +
-        mousePos1.y +
+        Constants.mousePos1.y +
         "," +
-        mousePos2.x +
+        Constants.mousePos2.x +
         "," +
-        mousePos2.y +
+        Constants.mousePos2.y +
         "));";
-      mousePos1 = null;
-      mousePos2 = null;
+      Constants.mousePos1 = null;
+      Constants.mousePos2 = null;
     }
-  } else if (placingPlayer && !playerPlaced && player) {
-    playerPlaced = true;
-    player.currentPos = createVector(mouseX, mouseY);
-  } else if (placingCoins) {
+  } else if (
+    Constants.placingPlayer &&
+    !Constants.playerPlaced &&
+    Constants.player
+  ) {
+    Constants.playerPlaced = true;
+    Constants.player.currentPos = window.createVector(
+      window.mouseX,
+      window.mouseY,
+    );
   }
-  // print(
-  //   "levels[" +
-  //     player?.currentLevelNo +
-  //     "].coins.push(new Coin( " +
-  //     floor(mouseX) +
-  //     "," +
-  //     floor(mouseY - 50) +
-  //     ' , "progress" ));',
-  // );
 }
+
+// p5 lib workaround
+window.preload = preload;
+window.setupCanvas = setupCanvas;
+window.setup = setup;
+window.drawMousePosition = drawMousePosition;
+window.draw = draw;
+window.showLevel = showLevel;
+window.showLines = showLines;
+window.keyPressed = keyPressed;
+window.keyReleased = keyReleased;
+window.mouseClicked = mouseClicked;

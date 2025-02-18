@@ -26,12 +26,12 @@ class Line {
   }
 
   Show() {
-    push();
-    stroke(255, 0, 0);
-    strokeWeight(3);
-    line(this.x1, this.y1, this.x2, this.y2);
-    ellipse(this.midPoint.x, this.midPoint.y, 10, 10);
-    pop();
+    window.push();
+    window.stroke(255, 0, 0);
+    window.strokeWeight(3);
+    window.line(this.x1, this.y1, this.x2, this.y2);
+    window.ellipse(this.midPoint.x, this.midPoint.y, 10, 10);
+    window.pop();
   }
 
   ensurePointsAreInOrder() {
@@ -49,3 +49,4 @@ class Line {
   }
 }
 
+export { Line };
