@@ -84,7 +84,7 @@ class ClientConnection {
     if (conn) {
       conn.close();
     }
-    conn = new WebSocket(socketUrl);
+    this.#wsConnection = new WebSocket(socketUrl);
     this.init();
   }
 

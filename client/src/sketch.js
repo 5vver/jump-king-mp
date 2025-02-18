@@ -7,34 +7,32 @@ import { Player } from "./Player.js";
 
 function preload() {
   Constants.backgroundImage = window.loadImage(
-    "src/assets/images/levelImages/1.png",
+    "assets/images/levelImages/1.png",
   );
-  Constants.idleImage = window.loadImage("src/assets/images/poses/idle.png");
-  Constants.squatImage = window.loadImage("src/assets/images/poses/squat.png");
-  Constants.jumpImage = window.loadImage("src/assets/images/poses/jump.png");
-  Constants.oofImage = window.loadImage("src/assets/images/poses/oof.png");
-  Constants.run1Image = window.loadImage("src/assets/images/poses/run1.png");
-  Constants.run2Image = window.loadImage("src/assets/images/poses/run2.png");
-  Constants.run3Image = window.loadImage("src/assets/images/poses/run3.png");
-  Constants.fallenImage = window.loadImage(
-    "src/assets/images/poses/fallen.png",
-  );
-  Constants.fallImage = window.loadImage("src/assets/images/poses/fall.png");
+  Constants.idleImage = window.loadImage("assets/images/poses/idle.png");
+  Constants.squatImage = window.loadImage("assets/images/poses/squat.png");
+  Constants.jumpImage = window.loadImage("assets/images/poses/jump.png");
+  Constants.oofImage = window.loadImage("assets/images/poses/oof.png");
+  Constants.run1Image = window.loadImage("assets/images/poses/run1.png");
+  Constants.run2Image = window.loadImage("assets/images/poses/run2.png");
+  Constants.run3Image = window.loadImage("assets/images/poses/run3.png");
+  Constants.fallenImage = window.loadImage("assets/images/poses/fallen.png");
+  Constants.fallImage = window.loadImage("assets/images/poses/fall.png");
 
-  Constants.snowImage = window.loadImage("src/assets/images/snow3.png");
+  Constants.snowImage = window.loadImage("assets/images/snow3.png");
 
   for (let i = 1; i <= 43; i++) {
     Constants.levelImages.push(
-      window.loadImage("src/assets/images/levelImages/" + i + ".png"),
+      window.loadImage("assets/images/levelImages/" + i + ".png"),
     );
   }
 
-  Constants.jumpSound = window.loadSound("src/assets/sounds/jump.mp3");
-  Constants.fallSound = window.loadSound("src/assets/sounds/fall.mp3");
-  Constants.bumpSound = window.loadSound("src/assets/sounds/bump.mp3");
-  Constants.landSound = window.loadSound("src/assets/sounds/land.mp3");
+  Constants.jumpSound = window.loadSound("assets/sounds/jump.mp3");
+  Constants.fallSound = window.loadSound("assets/sounds/fall.mp3");
+  Constants.bumpSound = window.loadSound("assets/sounds/bump.mp3");
+  Constants.landSound = window.loadSound("assets/sounds/land.mp3");
 
-  Constants.font = window.loadFont("src/assets/fonts/ttf_alkhemikal.ttf");
+  Constants.font = window.loadFont("assets/fonts/ttf_alkhemikal.ttf");
 }
 
 // Spawn main Constants.player & joined players on connection

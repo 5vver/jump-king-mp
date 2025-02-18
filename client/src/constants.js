@@ -72,4 +72,6 @@ const Constants = {
   levels: [],
 };
 
-export { Constants };
+const isDev = import.meta.env.MODE === "development";
+
+export { Constants, isDev };
