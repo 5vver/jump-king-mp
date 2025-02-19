@@ -1,5 +1,5 @@
 import { Coin } from "./Coin";
-import { Constants } from "./constants";
+import { GameState } from "./constants";
 import { Level } from "./Level";
 import { Line } from "./Line";
 
@@ -19,7 +19,7 @@ function setupLevels() {
   // tempLevel.lines.push(new Line(320,260,520, 460));
   // tempLevel.lines.push(new Line(120,460,320, 260));
   // tempLevel.lines.push(new Line(680,820,1080,420));
-  Constants.levels.push(tempLevel);
+  GameState.levels.push(tempLevel);
 
   tempLevel = new Level();
   tempLevel.lines.push(new Line(20, 0, 20, 200));
@@ -44,7 +44,7 @@ function setupLevels() {
   tempLevel.lines.push(new Line(300, 420, 480, 420));
   tempLevel.lines.push(new Line(480, 420, 480, 260));
   tempLevel.lines.push(new Line(480, 260, 300, 260));
-  Constants.levels.push(tempLevel);
+  GameState.levels.push(tempLevel);
   tempLevel = new Level();
   tempLevel.lines.push(new Line(20, 0, 20, 240));
   tempLevel.lines.push(new Line(20, 240, 160, 240));
@@ -77,7 +77,7 @@ function setupLevels() {
   tempLevel.lines.push(new Line(840, 520, 720, 520));
   tempLevel.lines.push(new Line(720, 520, 720, 560));
   tempLevel.lines.push(new Line(720, 560, 480, 560));
-  Constants.levels.push(tempLevel);
+  GameState.levels.push(tempLevel);
   tempLevel = new Level();
   tempLevel.lines.push(new Line(20, 0, 20, 540));
   tempLevel.lines.push(new Line(20, 540, 160, 540));
@@ -112,7 +112,7 @@ function setupLevels() {
   tempLevel.lines.push(new Line(820, 0, 820, 40));
   tempLevel.lines.push(new Line(820, 40, 860, 40));
   tempLevel.lines.push(new Line(860, 40, 860, 0));
-  Constants.levels.push(tempLevel);
+  GameState.levels.push(tempLevel);
   tempLevel = new Level();
   tempLevel.lines.push(new Line(20, 900, 20, 640));
   tempLevel.lines.push(new Line(20, 640, 100, 640));
@@ -157,7 +157,7 @@ function setupLevels() {
   tempLevel.lines.push(new Line(380, 0, 380, 40));
   tempLevel.lines.push(new Line(380, 40, 820, 40));
   tempLevel.lines.push(new Line(820, 40, 820, 0));
-  Constants.levels.push(tempLevel);
+  GameState.levels.push(tempLevel);
   tempLevel = new Level();
   tempLevel.lines.push(new Line(20, 900, 20, 500));
   tempLevel.lines.push(new Line(20, 500, 140, 500));
@@ -193,7 +193,7 @@ function setupLevels() {
   tempLevel.lines.push(new Line(820, 100, 820, 60));
   tempLevel.lines.push(new Line(820, 60, 720, 60));
   tempLevel.lines.push(new Line(720, 60, 720, 0));
-  Constants.levels.push(tempLevel);
+  GameState.levels.push(tempLevel);
   tempLevel = new Level();
   tempLevel.lines.push(new Line(1180, 900, 1180, 340));
   tempLevel.lines.push(new Line(1180, 340, 960, 340));
@@ -235,7 +235,7 @@ function setupLevels() {
   tempLevel.lines.push(new Line(480, 640, 520, 640));
   tempLevel.lines.push(new Line(520, 640, 520, 600));
   tempLevel.lines.push(new Line(520, 600, 340, 600));
-  Constants.levels.push(tempLevel);
+  GameState.levels.push(tempLevel);
   tempLevel = new Level();
   tempLevel.lines.push(new Line(20, 0, 20, 160));
   tempLevel.lines.push(new Line(20, 160, 80, 160));
@@ -264,7 +264,7 @@ function setupLevels() {
   tempLevel.lines.push(new Line(620, 60, 560, 0));
   tempLevel.lines.push(new Line(620, 220, 220, 220));
   tempLevel.lines.push(new Line(220, 220, 220, 0));
-  Constants.levels.push(tempLevel);
+  GameState.levels.push(tempLevel);
   tempLevel = new Level();
   tempLevel.lines.push(new Line(20, 900, 20, 480));
   tempLevel.lines.push(new Line(20, 480, 80, 480));
@@ -312,7 +312,7 @@ function setupLevels() {
   tempLevel.lines.push(new Line(980, 320, 1060, 320));
   tempLevel.lines.push(new Line(1060, 320, 1060, 240));
   tempLevel.lines.push(new Line(1060, 240, 980, 240));
-  Constants.levels.push(tempLevel);
+  GameState.levels.push(tempLevel);
   tempLevel = new Level();
   tempLevel.lines.push(new Line(20, 0, 20, 460));
   tempLevel.lines.push(new Line(20, 460, 140, 460));
@@ -350,7 +350,7 @@ function setupLevels() {
   tempLevel.lines.push(new Line(500, 0, 500, 120));
   tempLevel.lines.push(new Line(500, 120, 380, 120));
   tempLevel.lines.push(new Line(380, 120, 380, 0));
-  Constants.levels.push(tempLevel);
+  GameState.levels.push(tempLevel);
   tempLevel = new Level();
   tempLevel.lines.push(new Line(20, 900, 20, 560));
   tempLevel.lines.push(new Line(20, 560, 100, 560));
@@ -416,7 +416,7 @@ function setupLevels() {
   tempLevel.lines.push(new Line(620, 440, 740, 440));
   tempLevel.lines.push(new Line(740, 440, 740, 120));
   tempLevel.lines.push(new Line(740, 120, 620, 120));
-  Constants.levels.push(tempLevel);
+  GameState.levels.push(tempLevel);
   tempLevel = new Level();
   tempLevel.lines.push(new Line(20, 900, 20, 580));
   tempLevel.lines.push(new Line(20, 580, 60, 580));
@@ -452,7 +452,7 @@ function setupLevels() {
   tempLevel.lines.push(new Line(740, 400, 820, 400));
   tempLevel.lines.push(new Line(820, 400, 820, 320));
   tempLevel.lines.push(new Line(820, 320, 740, 320));
-  Constants.levels.push(tempLevel);
+  GameState.levels.push(tempLevel);
   tempLevel = new Level();
 
   tempLevel.lines.push(new Line(20, 900, 20, 0));
@@ -486,7 +486,7 @@ function setupLevels() {
   tempLevel.lines.push(new Line(860, 400, 940, 400));
   tempLevel.lines.push(new Line(940, 400, 940, 280));
   tempLevel.lines.push(new Line(940, 280, 860, 280));
-  Constants.levels.push(tempLevel);
+  GameState.levels.push(tempLevel);
   tempLevel = new Level();
   tempLevel.lines.push(new Line(560, 900, 560, 700));
   tempLevel.lines.push(new Line(560, 700, 480, 700));
@@ -509,7 +509,7 @@ function setupLevels() {
   tempLevel.lines.push(new Line(900, 380, 1060, 380));
   tempLevel.lines.push(new Line(1060, 380, 1060, 340));
   tempLevel.lines.push(new Line(1060, 340, 900, 340));
-  Constants.levels.push(tempLevel);
+  GameState.levels.push(tempLevel);
   tempLevel = new Level();
   tempLevel.lines.push(new Line(400, 900, 400, 820));
   tempLevel.lines.push(new Line(400, 820, 20, 820));
@@ -544,7 +544,7 @@ function setupLevels() {
   tempLevel.lines.push(new Line(480, 200, 580, 200));
   tempLevel.lines.push(new Line(580, 200, 580, 160));
   tempLevel.lines.push(new Line(20, 280, 20, 380));
-  Constants.levels.push(tempLevel);
+  GameState.levels.push(tempLevel);
   tempLevel = new Level();
   tempLevel.lines.push(new Line(80, 900, 160, 820));
   tempLevel.lines.push(new Line(160, 820, 160, 780));
@@ -591,7 +591,7 @@ function setupLevels() {
   tempLevel.lines.push(new Line(640, 380, 460, 380));
   tempLevel.lines.push(new Line(460, 380, 460, 420));
   tempLevel.lines.push(new Line(460, 420, 640, 420));
-  Constants.levels.push(tempLevel);
+  GameState.levels.push(tempLevel);
   tempLevel = new Level();
   tempLevel.lines.push(new Line(1000, 900, 1000, 780));
   tempLevel.lines.push(new Line(1000, 780, 1080, 780));
@@ -632,7 +632,7 @@ function setupLevels() {
   tempLevel.lines.push(new Line(800, 560, 740, 560));
   tempLevel.lines.push(new Line(740, 560, 740, 320));
   tempLevel.lines.push(new Line(740, 320, 700, 280));
-  Constants.levels.push(tempLevel);
+  GameState.levels.push(tempLevel);
   tempLevel = new Level();
   tempLevel.lines.push(new Line(20, 900, 20, 500));
   tempLevel.lines.push(new Line(20, 500, 0, 500));
@@ -716,7 +716,7 @@ function setupLevels() {
   tempLevel.lines.push(new Line(880, 740, 820, 740));
   tempLevel.lines.push(new Line(820, 740, 820, 700));
   tempLevel.lines.push(new Line(820, 700, 620, 700));
-  Constants.levels.push(tempLevel);
+  GameState.levels.push(tempLevel);
   tempLevel = new Level();
   tempLevel.lines.push(new Line(920, 900, 940, 880));
   tempLevel.lines.push(new Line(940, 880, 1000, 880));
@@ -759,7 +759,7 @@ function setupLevels() {
   tempLevel.lines.push(new Line(320, 200, 440, 200));
   tempLevel.lines.push(new Line(440, 200, 440, 140));
   tempLevel.lines.push(new Line(440, 140, 320, 140));
-  Constants.levels.push(tempLevel);
+  GameState.levels.push(tempLevel);
   tempLevel = new Level();
   tempLevel.lines.push(new Line(100, 900, 100, 520));
   tempLevel.lines.push(new Line(100, 520, 220, 520));
@@ -794,7 +794,7 @@ function setupLevels() {
   tempLevel.lines.push(new Line(1060, 220, 1060, 340));
   tempLevel.lines.push(new Line(1060, 340, 900, 340));
   tempLevel.lines.push(new Line(900, 340, 1020, 220));
-  Constants.levels.push(tempLevel);
+  GameState.levels.push(tempLevel);
   tempLevel = new Level();
   tempLevel.lines.push(new Line(20, 900, 20, 740));
   tempLevel.lines.push(new Line(20, 740, 40, 720));
@@ -830,7 +830,7 @@ function setupLevels() {
   tempLevel.lines.push(new Line(760, 540, 820, 540));
   tempLevel.lines.push(new Line(820, 540, 820, 460));
   tempLevel.lines.push(new Line(820, 460, 720, 460));
-  Constants.levels.push(tempLevel);
+  GameState.levels.push(tempLevel);
   tempLevel = new Level();
   tempLevel.lines.push(new Line(420, 900, 420, 840));
   tempLevel.lines.push(new Line(420, 840, 340, 840));
@@ -869,7 +869,7 @@ function setupLevels() {
   tempLevel.lines.push(new Line(780, 260, 780, 360));
   tempLevel.lines.push(new Line(780, 360, 900, 480));
   tempLevel.lines.push(new Line(900, 480, 640, 480));
-  Constants.levels.push(tempLevel);
+  GameState.levels.push(tempLevel);
   tempLevel = new Level();
   tempLevel.lines.push(new Line(160, 900, 160, 560));
   tempLevel.lines.push(new Line(160, 560, 80, 560));
@@ -893,7 +893,7 @@ function setupLevels() {
   tempLevel.lines.push(new Line(900, 420, 800, 420));
   tempLevel.lines.push(new Line(80, 560, 80, 540));
   tempLevel.lines.push(new Line(20, 260, 20, 240));
-  Constants.levels.push(tempLevel);
+  GameState.levels.push(tempLevel);
   tempLevel = new Level();
   tempLevel.lines.push(new Line(20, 900, 20, 0));
   tempLevel.lines.push(new Line(1180, 900, 1180, 0));
@@ -920,7 +920,7 @@ function setupLevels() {
   tempLevel.lines.push(new Line(240, 540, 340, 540));
   tempLevel.lines.push(new Line(340, 540, 340, 520));
   tempLevel.lines.push(new Line(340, 520, 240, 520));
-  Constants.levels.push(tempLevel);
+  GameState.levels.push(tempLevel);
   tempLevel = new Level();
   tempLevel.lines.push(new Line(1180, 900, 1180, 0));
   tempLevel.lines.push(new Line(860, 0, 860, 40));
@@ -960,7 +960,7 @@ function setupLevels() {
   tempLevel.lines.push(new Line(260, 140, 260, 240));
   tempLevel.lines.push(new Line(260, 240, 380, 360));
   tempLevel.lines.push(new Line(380, 360, 120, 360));
-  Constants.levels.push(tempLevel);
+  GameState.levels.push(tempLevel);
   tempLevel = new Level();
   tempLevel.lines.push(new Line(20, 900, 20, 780));
   tempLevel.lines.push(new Line(20, 780, 140, 660));
@@ -996,7 +996,7 @@ function setupLevels() {
   tempLevel.lines.push(new Line(1100, 380, 1100, 240));
   tempLevel.lines.push(new Line(1100, 240, 1180, 240));
   tempLevel.lines.push(new Line(1180, 240, 1180, 0));
-  Constants.levels.push(tempLevel);
+  GameState.levels.push(tempLevel);
   tempLevel = new Level();
   tempLevel.lines.push(new Line(380, 900, 380, 760));
   tempLevel.lines.push(new Line(380, 760, 480, 760));
@@ -1023,7 +1023,7 @@ function setupLevels() {
   tempLevel.lines.push(new Line(580, 600, 580, 420));
   tempLevel.lines.push(new Line(580, 420, 420, 420));
   tempLevel.lines.push(new Line(420, 420, 420, 600));
-  Constants.levels.push(tempLevel);
+  GameState.levels.push(tempLevel);
   tempLevel = new Level();
   tempLevel.lines.push(new Line(20, 900, 20, 0));
   tempLevel.lines.push(new Line(180, 540, 380, 540));
@@ -1049,7 +1049,7 @@ function setupLevels() {
   tempLevel.lines.push(new Line(620, 100, 620, 220));
   tempLevel.lines.push(new Line(620, 220, 900, 220));
   tempLevel.lines.push(new Line(900, 220, 900, 0));
-  Constants.levels.push(tempLevel);
+  GameState.levels.push(tempLevel);
   tempLevel = new Level();
   tempLevel.lines.push(new Line(20, 900, 20, 780));
   tempLevel.lines.push(new Line(20, 780, 80, 720));
@@ -1073,7 +1073,7 @@ function setupLevels() {
   tempLevel.lines.push(new Line(500, 0, 500, 120));
   tempLevel.lines.push(new Line(500, 120, 180, 120));
   tempLevel.lines.push(new Line(180, 120, 180, 0));
-  Constants.levels.push(tempLevel);
+  GameState.levels.push(tempLevel);
   tempLevel = new Level();
   tempLevel.lines.push(new Line(1180, 900, 1180, 100));
   tempLevel.lines.push(new Line(1180, 100, 1100, 100));
@@ -1104,7 +1104,7 @@ function setupLevels() {
   tempLevel.lines.push(new Line(1080, 320, 1080, 240));
   tempLevel.lines.push(new Line(1080, 240, 920, 240));
   tempLevel.lines.push(new Line(920, 240, 920, 380));
-  Constants.levels.push(tempLevel);
+  GameState.levels.push(tempLevel);
   tempLevel = new Level();
   tempLevel.lines.push(new Line(20, 900, 20, 720));
   tempLevel.lines.push(new Line(20, 720, 100, 640));
@@ -1136,7 +1136,7 @@ function setupLevels() {
   tempLevel.lines.push(new Line(340, 240, 340, 180));
   tempLevel.lines.push(new Line(340, 180, 480, 180));
   tempLevel.lines.push(new Line(480, 180, 480, 240));
-  Constants.levels.push(tempLevel);
+  GameState.levels.push(tempLevel);
   tempLevel = new Level();
   tempLevel.lines.push(new Line(120, 900, 120, 820));
   tempLevel.lines.push(new Line(120, 820, 20, 820));
@@ -1173,7 +1173,7 @@ function setupLevels() {
   tempLevel.lines.push(new Line(660, 500, 760, 500));
   tempLevel.lines.push(new Line(760, 500, 760, 460));
   tempLevel.lines.push(new Line(760, 460, 660, 460));
-  Constants.levels.push(tempLevel);
+  GameState.levels.push(tempLevel);
   tempLevel = new Level();
   tempLevel.lines.push(new Line(100, 900, 100, 860));
   tempLevel.lines.push(new Line(100, 860, 40, 860));
@@ -1234,7 +1234,7 @@ function setupLevels() {
   tempLevel.lines.push(new Line(880, 0, 880, 80));
   tempLevel.lines.push(new Line(880, 80, 900, 80));
   tempLevel.lines.push(new Line(900, 80, 900, 0));
-  Constants.levels.push(tempLevel);
+  GameState.levels.push(tempLevel);
   tempLevel = new Level();
   tempLevel.lines.push(new Line(40, 900, 40, 0));
   tempLevel.lines.push(new Line(240, 0, 240, 40));
@@ -1282,7 +1282,7 @@ function setupLevels() {
   tempLevel.lines.push(new Line(660, 280, 680, 280));
   tempLevel.lines.push(new Line(680, 280, 680, 360));
   tempLevel.lines.push(new Line(680, 360, 760, 360));
-  Constants.levels.push(tempLevel);
+  GameState.levels.push(tempLevel);
   tempLevel = new Level();
   tempLevel.lines.push(new Line(40, 900, 40, 680));
   tempLevel.lines.push(new Line(40, 680, 60, 680));
@@ -1336,7 +1336,7 @@ function setupLevels() {
   tempLevel.lines.push(new Line(480, 180, 460, 180));
   tempLevel.lines.push(new Line(460, 180, 460, 260));
   tempLevel.lines.push(new Line(460, 260, 380, 260));
-  Constants.levels.push(tempLevel);
+  GameState.levels.push(tempLevel);
   tempLevel = new Level();
   tempLevel.lines.push(new Line(20, 0, 20, 900));
   tempLevel.lines.push(new Line(280, 900, 280, 720));
@@ -1384,7 +1384,7 @@ function setupLevels() {
   tempLevel.lines.push(new Line(580, 20, 560, 0));
   tempLevel.lines.push(new Line(560, 0, 520, 40));
   tempLevel.lines.push(new Line(520, 40, 480, 0));
-  Constants.levels.push(tempLevel);
+  GameState.levels.push(tempLevel);
   tempLevel = new Level();
   tempLevel.lines.push(new Line(1040, 900, 1040, 820));
   tempLevel.lines.push(new Line(1040, 820, 1180, 820));
@@ -1437,7 +1437,7 @@ function setupLevels() {
   tempLevel.lines.push(new Line(380, 0, 380, 40));
   tempLevel.lines.push(new Line(380, 40, 460, 40));
   tempLevel.lines.push(new Line(460, 40, 460, 0));
-  Constants.levels.push(tempLevel);
+  GameState.levels.push(tempLevel);
   tempLevel = new Level();
   tempLevel.lines.push(new Line(20, 900, 20, 580));
   tempLevel.lines.push(new Line(20, 580, 40, 580));
@@ -1497,7 +1497,7 @@ function setupLevels() {
   tempLevel.lines.push(new Line(640, 0, 640, 40));
   tempLevel.lines.push(new Line(640, 40, 980, 40));
   tempLevel.lines.push(new Line(980, 40, 980, 0));
-  Constants.levels.push(tempLevel);
+  GameState.levels.push(tempLevel);
   tempLevel = new Level();
   tempLevel.lines.push(new Line(20, 0, 20, 920));
   tempLevel.lines.push(new Line(220, 900, 220, 460));
@@ -1527,7 +1527,7 @@ function setupLevels() {
   tempLevel.lines.push(new Line(280, 0, 280, 40));
   tempLevel.lines.push(new Line(280, 40, 360, 40));
   tempLevel.lines.push(new Line(360, 40, 360, 0));
-  Constants.levels.push(tempLevel);
+  GameState.levels.push(tempLevel);
   tempLevel = new Level();
   tempLevel.lines.push(new Line(1120, 900, 1120, 860));
   tempLevel.lines.push(new Line(1120, 860, 1180, 860));
@@ -1570,7 +1570,7 @@ function setupLevels() {
   tempLevel.lines.push(new Line(320, 280, 400, 280));
   tempLevel.lines.push(new Line(400, 280, 400, 240));
   tempLevel.lines.push(new Line(400, 240, 280, 240));
-  Constants.levels.push(tempLevel);
+  GameState.levels.push(tempLevel);
   tempLevel = new Level();
   tempLevel.lines.push(new Line(280, 900, 280, 360));
   tempLevel.lines.push(new Line(280, 360, 260, 360));
@@ -1604,7 +1604,7 @@ function setupLevels() {
   tempLevel.lines.push(new Line(220, 40, 220, 0));
   tempLevel.lines.push(new Line(0, 0, 0, 900));
   tempLevel.lines.push(new Line(1200, 900, 1200, 0));
-  Constants.levels.push(tempLevel);
+  GameState.levels.push(tempLevel);
   tempLevel = new Level();
   tempLevel.lines.push(new Line(0, 0, 0, 900));
   tempLevel.lines.push(new Line(220, 900, 220, 860));
@@ -1638,7 +1638,7 @@ function setupLevels() {
   tempLevel.lines.push(new Line(580, 540, 600, 540));
   tempLevel.lines.push(new Line(600, 540, 600, 440));
   tempLevel.lines.push(new Line(600, 440, 580, 440));
-  Constants.levels.push(tempLevel);
+  GameState.levels.push(tempLevel);
   tempLevel = new Level();
   tempLevel.lines.push(new Line(420, 900, 420, 860));
   tempLevel.lines.push(new Line(420, 860, 280, 860));
@@ -1663,14 +1663,14 @@ function setupLevels() {
   tempLevel.lines.push(new Line(1200, 900, 1200, 0));
   tempLevel.lines.push(new Line(0, 900, 0, 0));
   tempLevel.lines.push(new Line(0, 0, 1200, 0));
-  Constants.levels.push(tempLevel);
-  for (let i = 0; i < Constants.levels.length; i++) {
-    Constants.levels[i].levelImage = Constants.levelImages[i];
+  GameState.levels.push(tempLevel);
+  for (let i = 0; i < GameState.levels.length; i++) {
+    GameState.levels[i].levelImage = GameState.levelImages[i];
     if (i >= 25 && i <= 31) {
-      Constants.levels[i].isBlizzardLevel = true;
+      GameState.levels[i].isBlizzardLevel = true;
     }
     if (i >= 36 && i <= 38) {
-      Constants.levels[i].isIceLevel = true;
+      GameState.levels[i].isIceLevel = true;
     }
   }
 
@@ -1686,62 +1686,62 @@ function setupLevels() {
   // levels[0].coins.push(new Coin(x,y));
 
   // levels[0].coins.push(new Coin( 1061,653));
-  Constants.levels[4].coins.push(new Coin(143, 160));
-  Constants.levels[5].coins.push(new Coin(801, 140));
-  Constants.levels[6].coins.push(new Coin(419, 541));
-  Constants.levels[8].coins.push(new Coin(780, 459));
-  Constants.levels[16].coins.push(new Coin(650, 570));
-  Constants.levels[16].coins.push(new Coin(195, 339));
-  Constants.levels[17].coins.push(new Coin(722, 648));
-  Constants.levels[17].coins.push(new Coin(1184, 781));
-  Constants.levels[17].coins.push(new Coin(1077, 297));
-  Constants.levels[24].coins.push(new Coin(971, 514));
-  Constants.levels[37].coins.push(new Coin(158, 666));
-  Constants.levels[36].coins.push(new Coin(721, 187));
-  Constants.levels[37].coins.push(new Coin(1042, 151));
-  Constants.levels[42].coins.push(new Coin(986, 306));
+  GameState.levels[4].coins.push(new Coin(143, 160));
+  GameState.levels[5].coins.push(new Coin(801, 140));
+  GameState.levels[6].coins.push(new Coin(419, 541));
+  GameState.levels[8].coins.push(new Coin(780, 459));
+  GameState.levels[16].coins.push(new Coin(650, 570));
+  GameState.levels[16].coins.push(new Coin(195, 339));
+  GameState.levels[17].coins.push(new Coin(722, 648));
+  GameState.levels[17].coins.push(new Coin(1184, 781));
+  GameState.levels[17].coins.push(new Coin(1077, 297));
+  GameState.levels[24].coins.push(new Coin(971, 514));
+  GameState.levels[37].coins.push(new Coin(158, 666));
+  GameState.levels[36].coins.push(new Coin(721, 187));
+  GameState.levels[37].coins.push(new Coin(1042, 151));
+  GameState.levels[42].coins.push(new Coin(986, 306));
 
   // levels[0].coins.push(new Coin( 595,30 , "progress" ));
 
-  Constants.levels[1].coins.push(new Coin(143, 148, "progress"));
-  Constants.levels[1].coins.push(new Coin(155, 142, "progress"));
-  Constants.levels[1].coins.push(new Coin(65, 148, "progress"));
+  GameState.levels[1].coins.push(new Coin(143, 148, "progress"));
+  GameState.levels[1].coins.push(new Coin(155, 142, "progress"));
+  GameState.levels[1].coins.push(new Coin(65, 148, "progress"));
 
-  Constants.levels[2].coins.push(new Coin(125, 187, "progress"));
-  Constants.levels[2].coins.push(new Coin(51, 183, "progress"));
-  Constants.levels[3].coins.push(new Coin(843, 125, "progress"));
-  Constants.levels[3].coins.push(new Coin(411, 170, "progress"));
-  Constants.levels[4].coins.push(new Coin(137, 173, "progress"));
-  Constants.levels[5].coins.push(new Coin(1122, 65, "progress"));
-  Constants.levels[5].coins.push(new Coin(1121, 151, "progress"));
-  Constants.levels[5].coins.push(new Coin(1101, 92, "progress"));
-  Constants.levels[6].coins.push(new Coin(349, 74, "progress"));
-  Constants.levels[7].coins.push(new Coin(154, 293, "progress"));
-  Constants.levels[8].coins.push(new Coin(602, 182, "progress"));
-  Constants.levels[12].coins.push(new Coin(1135, 37, "progress"));
-  Constants.levels[13].coins.push(new Coin(665, 193, "progress"));
-  Constants.levels[13].coins.push(new Coin(587, 194, "progress"));
-  Constants.levels[17].coins.push(new Coin(975, 147, "progress"));
-  Constants.levels[22].coins.push(new Coin(1139, 111, "progress"));
-  Constants.levels[36].coins.push(new Coin(686, 205, "progress"));
-  Constants.levels[37].coins.push(new Coin(1005, 181, "progress"));
-  Constants.levels[39].coins.push(new Coin(365, 187, "progress"));
+  GameState.levels[2].coins.push(new Coin(125, 187, "progress"));
+  GameState.levels[2].coins.push(new Coin(51, 183, "progress"));
+  GameState.levels[3].coins.push(new Coin(843, 125, "progress"));
+  GameState.levels[3].coins.push(new Coin(411, 170, "progress"));
+  GameState.levels[4].coins.push(new Coin(137, 173, "progress"));
+  GameState.levels[5].coins.push(new Coin(1122, 65, "progress"));
+  GameState.levels[5].coins.push(new Coin(1121, 151, "progress"));
+  GameState.levels[5].coins.push(new Coin(1101, 92, "progress"));
+  GameState.levels[6].coins.push(new Coin(349, 74, "progress"));
+  GameState.levels[7].coins.push(new Coin(154, 293, "progress"));
+  GameState.levels[8].coins.push(new Coin(602, 182, "progress"));
+  GameState.levels[12].coins.push(new Coin(1135, 37, "progress"));
+  GameState.levels[13].coins.push(new Coin(665, 193, "progress"));
+  GameState.levels[13].coins.push(new Coin(587, 194, "progress"));
+  GameState.levels[17].coins.push(new Coin(975, 147, "progress"));
+  GameState.levels[22].coins.push(new Coin(1139, 111, "progress"));
+  GameState.levels[36].coins.push(new Coin(686, 205, "progress"));
+  GameState.levels[37].coins.push(new Coin(1005, 181, "progress"));
+  GameState.levels[39].coins.push(new Coin(365, 187, "progress"));
 
-  Constants.levels[1].hasProgressionCoins = true;
-  Constants.levels[2].hasProgressionCoins = true;
-  Constants.levels[3].hasProgressionCoins = true;
-  Constants.levels[4].hasProgressionCoins = true;
-  Constants.levels[5].hasProgressionCoins = true;
-  Constants.levels[6].hasProgressionCoins = true;
-  Constants.levels[7].hasProgressionCoins = true;
-  Constants.levels[8].hasProgressionCoins = true;
-  Constants.levels[12].hasProgressionCoins = true;
-  Constants.levels[13].hasProgressionCoins = true;
-  Constants.levels[17].hasProgressionCoins = true;
-  Constants.levels[22].hasProgressionCoins = true;
-  Constants.levels[36].hasProgressionCoins = true;
-  Constants.levels[37].hasProgressionCoins = true;
-  Constants.levels[39].hasProgressionCoins = true;
+  GameState.levels[1].hasProgressionCoins = true;
+  GameState.levels[2].hasProgressionCoins = true;
+  GameState.levels[3].hasProgressionCoins = true;
+  GameState.levels[4].hasProgressionCoins = true;
+  GameState.levels[5].hasProgressionCoins = true;
+  GameState.levels[6].hasProgressionCoins = true;
+  GameState.levels[7].hasProgressionCoins = true;
+  GameState.levels[8].hasProgressionCoins = true;
+  GameState.levels[12].hasProgressionCoins = true;
+  GameState.levels[13].hasProgressionCoins = true;
+  GameState.levels[17].hasProgressionCoins = true;
+  GameState.levels[22].hasProgressionCoins = true;
+  GameState.levels[36].hasProgressionCoins = true;
+  GameState.levels[37].hasProgressionCoins = true;
+  GameState.levels[39].hasProgressionCoins = true;
 }
 
 export { setupLevels };

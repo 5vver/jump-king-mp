@@ -1,4 +1,4 @@
-import { Constants } from "./constants.js";
+import { GameState } from "./constants.js";
 
 let minJumpSpeed = 5;
 let maxJumpSpeed = 22;
@@ -21,8 +21,8 @@ let mutePlayers = false;
 class PlayerState {
   constructor() {
     this.currentPos = window.createVector(
-      Constants.width / 2,
-      Constants.height - 200,
+      GameState.width / 2,
+      GameState.height - 200,
     ); // this is the top left corner of the hitbox
     this.currentSpeed = window.createVector(0, 0);
     this.isOnGround = false;
@@ -140,8 +140,8 @@ class Player {
 
     // this.currentPos = window.createVector(width / 2, height - 200); // this is the top left corner of the hitbox
     this.currentPos = window.createVector(
-      Constants.width / 2,
-      Constants.height - 200,
+      GameState.width / 2,
+      GameState.height - 200,
     ); // this is the top left corner of the hitbox
     this.currentSpeed = window.createVector(0, 0);
     this.isOnGround = false;
@@ -157,44 +157,44 @@ class Player {
     this.isSlidding = false;
     this.currentRunIndex = 1;
     this.runCycle = [
-      Constants.run1Image,
-      Constants.run1Image,
-      Constants.run1Image,
-      Constants.run1Image,
-      Constants.run1Image,
-      Constants.run1Image,
-      Constants.run1Image,
-      Constants.run1Image,
-      Constants.run1Image,
-      Constants.run1Image,
-      Constants.run1Image,
-      Constants.run1Image,
-      Constants.run1Image,
-      Constants.run2Image,
-      Constants.run2Image,
-      Constants.run2Image,
-      Constants.run2Image,
-      Constants.run2Image,
-      Constants.run2Image,
-      Constants.run3Image,
-      Constants.run3Image,
-      Constants.run3Image,
-      Constants.run3Image,
-      Constants.run3Image,
-      Constants.run3Image,
-      Constants.run3Image,
-      Constants.run3Image,
-      Constants.run3Image,
-      Constants.run3Image,
-      Constants.run3Image,
-      Constants.run3Image,
-      Constants.run3Image,
-      Constants.run2Image,
-      Constants.run2Image,
-      Constants.run2Image,
-      Constants.run2Image,
-      Constants.run2Image,
-      Constants.run2Image,
+      GameState.run1Image,
+      GameState.run1Image,
+      GameState.run1Image,
+      GameState.run1Image,
+      GameState.run1Image,
+      GameState.run1Image,
+      GameState.run1Image,
+      GameState.run1Image,
+      GameState.run1Image,
+      GameState.run1Image,
+      GameState.run1Image,
+      GameState.run1Image,
+      GameState.run1Image,
+      GameState.run2Image,
+      GameState.run2Image,
+      GameState.run2Image,
+      GameState.run2Image,
+      GameState.run2Image,
+      GameState.run2Image,
+      GameState.run3Image,
+      GameState.run3Image,
+      GameState.run3Image,
+      GameState.run3Image,
+      GameState.run3Image,
+      GameState.run3Image,
+      GameState.run3Image,
+      GameState.run3Image,
+      GameState.run3Image,
+      GameState.run3Image,
+      GameState.run3Image,
+      GameState.run3Image,
+      GameState.run3Image,
+      GameState.run2Image,
+      GameState.run2Image,
+      GameState.run2Image,
+      GameState.run2Image,
+      GameState.run2Image,
+      GameState.run2Image,
     ];
     this.sliddingRight = false;
 
@@ -250,8 +250,8 @@ class Player {
 
   ResetPlayer() {
     this.currentPos = window.createVector(
-      Constants.width / 2,
-      Constants.height - 200,
+      GameState.width / 2,
+      GameState.height - 200,
     ); // this is the top left corner of the hitbox
     this.currentSpeed = window.createVector(0, 0);
     this.isOnGround = false;
@@ -315,7 +315,7 @@ class Player {
     // current best fitness max just including height is 640,000, getting a coin has to be the most important thing so
     let coinValue = 500000;
     let heightThisLevel =
-      this.bestHeightReached - Constants.height * this.bestLevelReached;
+      this.bestHeightReached - GameState.height * this.bestLevelReached;
     this.fitness =
       heightThisLevel * heightThisLevel +
       coinValue * this.numberOfCoinsPickedUp;
@@ -326,7 +326,7 @@ class Player {
       return;
     }
 
-    let currentLines = Constants.levels[this.currentLevelNo].lines;
+    let currentLines = GameState.levels[this.currentLevelNo].lines;
     this.UpdatePlayerSlide(currentLines);
     this.ApplyGravity();
     this.ApplyBlizzardForce();
@@ -358,7 +358,7 @@ class Player {
     if (!x || !y || !this.playerName) {
       return;
     }
-    window.textFont(Constants.font);
+    window.textFont(GameState.font);
     window.textSize(24);
     window.fill(255, 255, 255);
 
@@ -424,7 +424,7 @@ class Player {
 
     if (
       !this.isOnGround &&
-      Constants.levels[this.currentLevelNo].isBlizzardLevel
+      GameState.levels[this.currentLevelNo].isBlizzardLevel
     ) {
       this.currentSpeed.x += this.blizzardForce;
     }
@@ -451,7 +451,7 @@ class Player {
 
         if (collidedLines.length > 1) {
           potentialLanding = true;
-          if (Constants.levels[this.currentLevelNo].isIceLevel) {
+          if (GameState.levels[this.currentLevelNo].isIceLevel) {
             this.currentSpeed.y = 0;
             if (this.IsMovingRight()) {
               this.currentSpeed.x -= iceFrictionAcceleration;
@@ -472,8 +472,8 @@ class Player {
         // ok we gonna need to snap this shit
         this.currentPos.y = chosenLine.y1;
         if (!mutePlayers || testingSinglePlayer) {
-          Constants.bumpSound.playMode("sustain");
-          Constants.bumpSound.play();
+          GameState.bumpSound.playMode("sustain");
+          GameState.bumpSound.play();
         }
       }
     } else if (chosenLine.isVertical) {
@@ -497,8 +497,8 @@ class Player {
       if (!this.isOnGround) {
         this.hasBumped = true;
         if (!mutePlayers || testingSinglePlayer) {
-          Constants.bumpSound.playMode("sustain");
-          Constants.bumpSound.play();
+          GameState.bumpSound.playMode("sustain");
+          GameState.bumpSound.play();
         }
       }
     } else {
@@ -685,8 +685,8 @@ class Player {
       if (this.hasBumped) {
         window.image(imageToUse, -70, -30);
       } else if (
-        imageToUse == Constants.jumpImage ||
-        imageToUse == Constants.fallImage
+        imageToUse == GameState.jumpImage ||
+        imageToUse == GameState.fallImage
       ) {
         window.image(imageToUse, -70, -28);
       } else {
@@ -697,8 +697,8 @@ class Player {
       if (this.hasBumped) {
         window.image(imageToUse, -20, -30);
       } else if (
-        imageToUse == Constants.jumpImage ||
-        imageToUse == Constants.fallImage
+        imageToUse == GameState.jumpImage ||
+        imageToUse == GameState.fallImage
       ) {
         window.image(imageToUse, -20, -28);
       } else {
@@ -720,18 +720,18 @@ class Player {
 
     //show snow
     if (
-      Constants.levels[this.currentLevelNo].isBlizzardLevel &&
+      GameState.levels[this.currentLevelNo].isBlizzardLevel &&
       (!alreadyShowingSnow || testingSinglePlayer)
     ) {
       let snowDrawPosition = this.snowImagePosition;
       while (snowDrawPosition <= 0) {
-        snowDrawPosition += Constants.width;
+        snowDrawPosition += GameState.width;
       }
-      snowDrawPosition = snowDrawPosition % Constants.width;
+      snowDrawPosition = snowDrawPosition % GameState.width;
 
       // let snowYPosition = (frameCount/2) % height;
       window.image(snowImage, snowDrawPosition, 0);
-      window.image(snowImage, snowDrawPosition - Constants.width, 0);
+      window.image(snowImage, snowDrawPosition - GameState.width, 0);
       // image(snowImage, snowDrawPosition, snowYPosition- height);
       // image(snowImage, snowDrawPosition - width, snowYPosition- height);
       alreadyShowingSnow = true;
@@ -771,12 +771,12 @@ class Player {
     // print(this.jumpTimer);
     this.jumpTimer = 0;
     this.jumpStartingHeight =
-      Constants.height -
+      GameState.height -
       this.currentPos.y +
-      Constants.height * this.currentLevelNo;
+      GameState.height * this.currentLevelNo;
     if (!mutePlayers || testingSinglePlayer) {
-      Constants.jumpSound.playMode("sustain");
-      Constants.jumpSound.play();
+      GameState.jumpSound.playMode("sustain");
+      GameState.jumpSound.play();
     }
   }
 
@@ -927,10 +927,10 @@ class Player {
   }
 
   GetImageToUseBasedOnState() {
-    if (this.jumpHeld && this.isOnGround) return Constants.squatImage;
-    if (this.hasFallen) return Constants.fallenImage;
-    if (this.hasBumped) return Constants.oofImage;
-    if (this.currentSpeed.y < 0) return Constants.jumpImage;
+    if (this.jumpHeld && this.isOnGround) return GameState.squatImage;
+    if (this.hasFallen) return GameState.fallenImage;
+    if (this.hasBumped) return GameState.oofImage;
+    if (this.currentSpeed.y < 0) return GameState.jumpImage;
     if (this.isRunning) {
       this.currentRunIndex += 1;
       if (this.currentRunIndex >= this.runCycle.length)
@@ -938,8 +938,8 @@ class Player {
       return this.runCycle[this.currentRunIndex];
     }
 
-    if (this.isOnGround) return Constants.idleImage;
-    return Constants.fallImage;
+    if (this.isOnGround) return GameState.idleImage;
+    return GameState.fallImage;
   }
 
   UpdatePlayerSlide(currentLines) {
@@ -954,7 +954,7 @@ class Player {
   UpdatePlayerRun(currentLines) {
     this.isRunning = false;
     let runAllowed =
-      !Constants.levels[this.currentLevelNo].isBlizzardLevel ||
+      !GameState.levels[this.currentLevelNo].isBlizzardLevel ||
       this.currentLevelNo === 31 ||
       this.currentLevelNo == 25;
     if (this.isOnGround) {
@@ -967,7 +967,7 @@ class Player {
           this.hasFallen = false;
           this.isRunning = true;
           this.facingRight = true;
-          if (!Constants.levels[this.currentLevelNo].isIceLevel) {
+          if (!GameState.levels[this.currentLevelNo].isIceLevel) {
             this.currentSpeed = window.createVector(runSpeed, 0);
           } else {
             this.currentSpeed.x += playerIceRunAcceleration;
@@ -977,14 +977,14 @@ class Player {
           this.hasFallen = false;
           this.isRunning = true;
           this.facingRight = false;
-          if (!Constants.levels[this.currentLevelNo].isIceLevel) {
+          if (!GameState.levels[this.currentLevelNo].isIceLevel) {
             this.currentSpeed = window.createVector(-runSpeed, 0);
           } else {
             this.currentSpeed.x -= playerIceRunAcceleration;
             this.currentSpeed.x = window.max(0 - runSpeed, this.currentSpeed.x);
           }
         } else {
-          if (!Constants.levels[this.currentLevelNo].isIceLevel) {
+          if (!GameState.levels[this.currentLevelNo].isIceLevel) {
             this.currentSpeed = window.createVector(0, 0);
           } else {
             this.currentSpeed.y = 0;
@@ -999,7 +999,7 @@ class Player {
           }
         }
       } else {
-        if (!Constants.levels[this.currentLevelNo].isIceLevel) {
+        if (!GameState.levels[this.currentLevelNo].isIceLevel) {
           this.currentSpeed = window.createVector(0, 0);
         } else {
           this.currentSpeed.y = 0;
@@ -1243,8 +1243,8 @@ class Player {
     if (this.currentPos.y < -this.height) {
       //we are at the top of the screen
       this.currentLevelNo += 1;
-      this.currentPos.y += Constants.height;
-    } else if (this.currentPos.y > Constants.height - this.height) {
+      this.currentPos.y += GameState.height;
+    } else if (this.currentPos.y > GameState.height - this.height) {
       if (this.currentLevelNo === 0) {
         //oh no
         // print("fuck me hes goin under")
@@ -1253,7 +1253,7 @@ class Player {
         this.hasFinishedInstructions = true;
       }
       this.currentLevelNo -= 1;
-      this.currentPos.y -= Constants.height;
+      this.currentPos.y -= GameState.height;
 
       if (
         !this.hasFinishedInstructions &&
@@ -1293,9 +1293,9 @@ class Player {
 
   GetGlobalHeight() {
     return (
-      Constants.height -
+      GameState.height -
       this.currentPos.y +
-      Constants.height * this.currentLevelNo
+      GameState.height * this.currentLevelNo
     );
   }
 
@@ -1303,7 +1303,7 @@ class Player {
     // if moving down then weve landed
     this.isOnGround = true;
     // if were on an ice level then we slide instead
-    if (Constants.levels[this.currentLevelNo].isIceLevel) {
+    if (GameState.levels[this.currentLevelNo].isIceLevel) {
       this.currentSpeed.y = 0;
       if (this.IsMovingRight()) {
         this.currentSpeed.x -= iceFrictionAcceleration;
@@ -1318,10 +1318,10 @@ class Player {
     this.hasBumped = false;
 
     if (
-      this.jumpStartingHeight - Constants.height / 2 >
-      Constants.height -
+      this.jumpStartingHeight - GameState.height / 2 >
+      GameState.height -
         this.currentPos.y +
-        Constants.height * this.currentLevelNo
+        GameState.height * this.currentLevelNo
     ) {
       this.hasFallen = true;
     }
@@ -1339,7 +1339,7 @@ class Player {
         //setup coins
         this.numberOfCoinsPickedUp = 0;
         this.progressionCoinPickedUp = false;
-        if (!Constants.levels[this.currentLevelNo].hasProgressionCoins) {
+        if (!GameState.levels[this.currentLevelNo].hasProgressionCoins) {
           this.progressionCoinPickedUp = true;
         }
         this.coinsPickedUpIndexes = [];
@@ -1359,11 +1359,11 @@ class Player {
 
     if (!mutePlayers || testingSinglePlayer) {
       if (this.hasFallen) {
-        Constants.fallSound.playMode("sustain");
-        Constants.fallSound.play();
+        GameState.fallSound.playMode("sustain");
+        GameState.fallSound.play();
       } else {
-        Constants.landSound.playMode("sustain");
-        Constants.landSound.play();
+        GameState.landSound.playMode("sustain");
+        GameState.landSound.play();
       }
     }
   }
@@ -1372,7 +1372,7 @@ class Player {
     if (this.currentLevelNo < this.bestLevelReached) {
       return;
     }
-    let currentLevel = Constants.levels[this.currentLevelNo];
+    let currentLevel = GameState.levels[this.currentLevelNo];
     for (let i = 0; i < currentLevel.coins.length; i++) {
       if (!this.coinsPickedUpIndexes.includes(i)) {
         if (currentLevel.coins[i].collidesWithPlayer(this)) {

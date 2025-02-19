@@ -1,4 +1,4 @@
-const Constants = {
+const GameState = {
   backgroundImage: null,
   idleImage: null,
   squatImage: null,
@@ -74,4 +74,4 @@ const Constants = {
 
 const isDev = import.meta.env.MODE === "development";
 
-export { Constants, isDev };
+export { GameState, isDev };

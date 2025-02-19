@@ -1,38 +1,38 @@
 import { ClientConnection } from "./connection";
 import { setupLevels } from "./LevelSetupFunction";
-import { Constants } from "./constants.js";
+import { GameState } from "./constants.js";
 import { Line } from "./Line";
 import { createModal, getSessionId } from "./utils";
 import { Player } from "./Player.js";
 
 function preload() {
-  Constants.backgroundImage = window.loadImage(
+  GameState.backgroundImage = window.loadImage(
     "assets/images/levelImages/1.png",
   );
-  Constants.idleImage = window.loadImage("assets/images/poses/idle.png");
-  Constants.squatImage = window.loadImage("assets/images/poses/squat.png");
-  Constants.jumpImage = window.loadImage("assets/images/poses/jump.png");
-  Constants.oofImage = window.loadImage("assets/images/poses/oof.png");
-  Constants.run1Image = window.loadImage("assets/images/poses/run1.png");
-  Constants.run2Image = window.loadImage("assets/images/poses/run2.png");
-  Constants.run3Image = window.loadImage("assets/images/poses/run3.png");
-  Constants.fallenImage = window.loadImage("assets/images/poses/fallen.png");
-  Constants.fallImage = window.loadImage("assets/images/poses/fall.png");
+  GameState.idleImage = window.loadImage("assets/images/poses/idle.png");
+  GameState.squatImage = window.loadImage("assets/images/poses/squat.png");
+  GameState.jumpImage = window.loadImage("assets/images/poses/jump.png");
+  GameState.oofImage = window.loadImage("assets/images/poses/oof.png");
+  GameState.run1Image = window.loadImage("assets/images/poses/run1.png");
+  GameState.run2Image = window.loadImage("assets/images/poses/run2.png");
+  GameState.run3Image = window.loadImage("assets/images/poses/run3.png");
+  GameState.fallenImage = window.loadImage("assets/images/poses/fallen.png");
+  GameState.fallImage = window.loadImage("assets/images/poses/fall.png");
 
-  Constants.snowImage = window.loadImage("assets/images/snow3.png");
+  GameState.snowImage = window.loadImage("assets/images/snow3.png");
 
   for (let i = 1; i <= 43; i++) {
-    Constants.levelImages.push(
+    GameState.levelImages.push(
       window.loadImage("assets/images/levelImages/" + i + ".png"),
     );
   }
 
-  Constants.jumpSound = window.loadSound("assets/sounds/jump.mp3");
-  Constants.fallSound = window.loadSound("assets/sounds/fall.mp3");
-  Constants.bumpSound = window.loadSound("assets/sounds/bump.mp3");
-  Constants.landSound = window.loadSound("assets/sounds/land.mp3");
+  GameState.jumpSound = window.loadSound("assets/sounds/jump.mp3");
+  GameState.fallSound = window.loadSound("assets/sounds/fall.mp3");
+  GameState.bumpSound = window.loadSound("assets/sounds/bump.mp3");
+  GameState.landSound = window.loadSound("assets/sounds/land.mp3");
 
-  Constants.font = window.loadFont("assets/fonts/ttf_alkhemikal.ttf");
+  GameState.font = window.loadFont("assets/fonts/ttf_alkhemikal.ttf");
 }
 
 // Spawn main Constants.player & joined players on connection
@@ -46,38 +46,38 @@ const onSessionJoin = (conn, connType, msg) => {
     window.location.href = `${window.location.href}${sessionId}`;
   }
 
-  if (connType === "start" && !Constants.player) {
-    Constants.player = new Player(clientId, pName);
+  if (connType === "start" && !GameState.player) {
+    GameState.player = new Player(clientId, pName);
 
     const connections = msg.Data?.Connections;
     for (const [connectionId, connectionName] of Object.entries(connections)) {
       if (connectionId === clientId) {
         continue;
       }
-      Constants.joinedPlayers.add(new Player(connectionId, connectionName));
+      GameState.joinedPlayers.add(new Player(connectionId, connectionName));
     }
 
-    Constants.streamInterval = setInterval(
+    GameState.streamInterval = setInterval(
       () => {
         if (!conn.connected) {
-          clearInterval(Constants.streamInterval);
+          clearInterval(GameState.streamInterval);
           return;
         }
 
         const data = {
-          x: Constants.player.currentPos.x,
-          y: Constants.player.currentPos.y,
-          leftHeld: Constants.player.leftHeld,
-          rightHeld: Constants.player.rightHeld,
-          jumpHeld: Constants.player.jumpHeld,
-          facingRight: Constants.player.facingRight,
-          currentLevelNo: Constants.player.currentLevelNo,
-          isOnGround: Constants.player.isOnGround,
-          isSlidding: Constants.player.isSlidding,
-          currentSpeedX: Constants.player.currentSpeed.x,
-          currentSpeedY: Constants.player.currentSpeed.y,
-          sliddingRight: Constants.player.sliddingRight,
-          hasFallen: Constants.player.hasFallen,
+          x: GameState.player.currentPos.x,
+          y: GameState.player.currentPos.y,
+          leftHeld: GameState.player.leftHeld,
+          rightHeld: GameState.player.rightHeld,
+          jumpHeld: GameState.player.jumpHeld,
+          facingRight: GameState.player.facingRight,
+          currentLevelNo: GameState.player.currentLevelNo,
+          isOnGround: GameState.player.isOnGround,
+          isSlidding: GameState.player.isSlidding,
+          currentSpeedX: GameState.player.currentSpeed.x,
+          currentSpeedY: GameState.player.currentSpeed.y,
+          sliddingRight: GameState.player.sliddingRight,
+          hasFallen: GameState.player.hasFallen,
         };
         conn.send({ Type: "action", Data: data });
       },
@@ -88,16 +88,16 @@ const onSessionJoin = (conn, connType, msg) => {
     return;
   }
 
-  if ([...Constants.joinedPlayers].every((p) => p.id !== msg.ClientId)) {
-    Constants.joinedPlayers.add(new Player(msg.ClientId, pName));
+  if ([...GameState.joinedPlayers].every((p) => p.id !== msg.ClientId)) {
+    GameState.joinedPlayers.add(new Player(msg.ClientId, pName));
   }
 };
 
 // Remove disconnected players
 const onSessionQuit = (clientId) => {
-  Constants.joinedPlayers.forEach((p) => {
+  GameState.joinedPlayers.forEach((p) => {
     if (p.id === clientId || !clientId) {
-      Constants.joinedPlayers.delete(p);
+      GameState.joinedPlayers.delete(p);
     }
   });
 };
@@ -107,7 +107,7 @@ const onActionReceive = (msg) => {
   const id = msg.ClientId;
   const data = msg.Data;
 
-  const updatePlayer = [...Constants.joinedPlayers].find((p) => p.id === id);
+  const updatePlayer = [...GameState.joinedPlayers].find((p) => p.id === id);
   if (!updatePlayer) {
     return;
   }
@@ -133,17 +133,17 @@ const onConnected = (conn) => {
     SessionId: sessionSlug?.length > 0 ? sessionSlug : undefined,
     Data: {
       SessionType: sessionSlug?.length > 0 ? "connect" : "create",
-      PlayerName: Constants.playerName,
+      PlayerName: GameState.playerName,
     },
   };
   conn.send(connectMessage);
 };
 
 function setupCanvas() {
-  Constants.canvas = window.createCanvas(1200, 950);
-  Constants.canvas.parent("canvas");
-  Constants.width = Constants.canvas.width;
-  Constants.height = Constants.canvas.height - 50;
+  GameState.canvas = window.createCanvas(1200, 950);
+  GameState.canvas.parent("canvas");
+  GameState.width = GameState.canvas.width;
+  GameState.height = GameState.canvas.height - 50;
 }
 
 function setup() {
@@ -157,8 +157,8 @@ function setup() {
     }
 
     hide();
-    Constants.playerName = inputValue.replace(/ /g, "");
-    Constants.connection = new ClientConnection({
+    GameState.playerName = inputValue.replace(/ /g, "");
+    GameState.connection = new ClientConnection({
       onConnected,
       onSessionJoin,
       onSessionQuit,
@@ -169,10 +169,10 @@ function setup() {
   setupCanvas();
 
   setupLevels();
-  Constants.jumpSound.playMode("sustain");
-  Constants.fallSound.playMode("sustain");
-  Constants.bumpSound.playMode("sustain");
-  Constants.landSound.playMode("sustain");
+  GameState.jumpSound.playMode("sustain");
+  GameState.fallSound.playMode("sustain");
+  GameState.bumpSound.playMode("sustain");
+  GameState.landSound.playMode("sustain");
 }
 
 function drawMousePosition() {
@@ -184,12 +184,12 @@ function drawMousePosition() {
   window.noStroke();
   window.ellipse(snappedX, snappedY, 5);
 
-  if (Constants.mousePos1 != null) {
+  if (GameState.mousePos1 != null) {
     window.stroke(255, 0, 0);
     window.strokeWeight(5);
     window.line(
-      Constants.mousePos1.x,
-      Constants.mousePos1.y,
+      GameState.mousePos1.x,
+      GameState.mousePos1.y,
       snappedX,
       snappedY,
     );
@@ -203,113 +203,113 @@ function draw() {
   window.push();
   window.translate(0, 50);
 
-  if (Constants.player) {
+  if (GameState.player) {
     window.image(
-      Constants.levels[Constants.player.currentLevelNo].levelImage,
+      GameState.levels[GameState.player.currentLevelNo].levelImage,
       0,
       0,
     );
-    Constants.levels[Constants.player.currentLevelNo].show();
-    Constants.player.Update();
-    Constants.player.Show();
+    GameState.levels[GameState.player.currentLevelNo].show();
+    GameState.player.Update();
+    GameState.player.Show();
   } else {
     // something fails here - levels levelImage - undefined
-    window.image(Constants.levels[0]?.levelImage, 0, 0);
-    Constants.levels[0].show();
+    window.image(GameState.levels[0]?.levelImage, 0, 0);
+    GameState.levels[0].show();
   }
 
-  Constants.joinedPlayers.forEach((p) => {
+  GameState.joinedPlayers.forEach((p) => {
     p.Update();
 
     // show joined Constants.player only on the same level
-    if (Constants.player?.currentLevelNo === p.currentLevelNo) {
+    if (GameState.player?.currentLevelNo === p.currentLevelNo) {
       p.Show();
     }
   });
 
-  if (Constants.showingLines || Constants.creatingLines) showLines();
+  if (GameState.showingLines || GameState.creatingLines) showLines();
 
-  if (Constants.creatingLines) drawMousePosition();
+  if (GameState.creatingLines) drawMousePosition();
 
   if (window.frameCount % 15 === 0) {
-    Constants.previousFrameRate = window.floor(window.getFrameRate());
+    GameState.previousFrameRate = window.floor(window.getFrameRate());
   }
 
   window.pop();
 
   window.fill(0);
   window.noStroke();
-  window.rect(0, 0, Constants.width, 50);
+  window.rect(0, 0, GameState.width, 50);
 
   window.textSize(32);
-  window.textFont(Constants.font);
+  window.textFont(GameState.font);
   window.fill(255, 255, 255);
   // text("FPS: " + previousFrameRate, width - 160, 35);
   window.text(
-    `Session: ${Constants.connection ? Constants.connection.getSessionId() : "no"}`,
+    `Session: ${GameState.connection ? GameState.connection.getSessionId() : "no"}`,
     20,
     35,
   );
-  const isConnected = !!Constants.connection?.getIsConnected();
+  const isConnected = !!GameState.connection?.getIsConnected();
   window.fill(isConnected ? 0 : 255, isConnected ? 255 : 0, 0);
   window.text(
     isConnected ? "Connected" : "Disconnected",
-    Constants.width - 160,
+    GameState.width - 160,
     35,
   );
 }
 
 function showLevel(levelNumberToShow) {
-  Constants.levels[levelNumberToShow].show();
+  GameState.levels[levelNumberToShow].show();
 }
 
 function showLines() {
-  if (Constants.creatingLines) {
-    for (let l of Constants.lines) {
+  if (GameState.creatingLines) {
+    for (let l of GameState.lines) {
       l.Show();
     }
   } else {
-    for (let l of Constants.levels[Constants.player.currentLevelNo].lines) {
+    for (let l of GameState.levels[GameState.player.currentLevelNo].lines) {
       l.Show();
     }
   }
 }
 
 function keyPressed() {
-  if (!Constants.player) {
+  if (!GameState.player) {
     return;
   }
 
   switch (key) {
     case " ":
-      Constants.player.jumpHeld = true;
+      GameState.player.jumpHeld = true;
       break;
     case "R":
-      Constants.player.ResetPlayer();
-      Constants.joinedPlayers.forEach((p) => {
+      GameState.player.ResetPlayer();
+      GameState.joinedPlayers.forEach((p) => {
         p.ResetPlayer();
       });
       break;
     case "S":
-      Constants.bumpSound.stop();
-      Constants.jumpSound.stop();
-      Constants.landSound.stop();
-      Constants.fallSound.stop();
+      GameState.bumpSound.stop();
+      GameState.jumpSound.stop();
+      GameState.landSound.stop();
+      GameState.fallSound.stop();
       break;
   }
 
   switch (keyCode) {
     case LEFT_ARROW:
-      Constants.player.leftHeld = true;
+      GameState.player.leftHeld = true;
       break;
     case RIGHT_ARROW:
-      Constants.player.rightHeld = true;
+      GameState.player.rightHeld = true;
       break;
   }
 }
 
 function keyReleased() {
-  if (!Constants.player) {
+  if (!GameState.player) {
     return;
   }
 
@@ -323,17 +323,17 @@ function keyReleased() {
     //   break;
 
     case " ":
-      if (!Constants.creatingLines && Constants.player.jumpHeld) {
-        Constants.player.jumpHeld = false;
-        Constants.player.Jump();
+      if (!GameState.creatingLines && GameState.player.jumpHeld) {
+        GameState.player.jumpHeld = false;
+        GameState.player.Jump();
       }
       break;
     case "R":
-      if (Constants.creatingLines) {
-        Constants.lines = [];
-        Constants.linesString = "";
-        Constants.mousePos1 = null;
-        Constants.mousePos2 = null;
+      if (GameState.creatingLines) {
+        GameState.lines = [];
+        GameState.linesString = "";
+        GameState.mousePos1 = null;
+        GameState.mousePos2 = null;
       }
       break;
     case "N":
@@ -348,34 +348,34 @@ function keyReleased() {
         mousePos1 = null;
         mousePos2 = null;
       } else {
-        Constants.player.currentLevelNo += 1;
-        print(Constants.player.currentLevelNo);
+        GameState.player.currentLevelNo += 1;
+        print(GameState.player.currentLevelNo);
       }
       break;
     case "D":
-      if (Constants.creatingLines) {
-        Constants.mousePos1 = null;
-        Constants.mousePos2 = null;
+      if (GameState.creatingLines) {
+        GameState.mousePos1 = null;
+        GameState.mousePos2 = null;
       }
   }
 
   switch (keyCode) {
     case LEFT_ARROW:
-      Constants.player.leftHeld = false;
+      GameState.player.leftHeld = false;
       break;
     case RIGHT_ARROW:
-      Constants.player.rightHeld = false;
+      GameState.player.rightHeld = false;
       break;
     case DOWN_ARROW:
-      Constants.evolationSpeed = window.constrain(
-        Constants.evolationSpeed - 1,
+      GameState.evolationSpeed = window.constrain(
+        GameState.evolationSpeed - 1,
         0,
         50,
       );
       break;
     case UP_ARROW:
-      Constants.evolationSpeed = window.constrain(
-        Constants.evolationSpeed + 1,
+      GameState.evolationSpeed = window.constrain(
+        GameState.evolationSpeed + 1,
         0,
         50,
       );
@@ -385,42 +385,42 @@ function keyReleased() {
 }
 
 function mouseClicked() {
-  if (Constants.creatingLines) {
+  if (GameState.creatingLines) {
     let snappedX = window.mouseX - (window.mouseX % 20);
     let snappedY = window.mouseY - (window.mouseY % 20);
-    if (Constants.mousePos1 == null) {
-      Constants.mousePos1 = window.createVector(snappedX, snappedY);
+    if (GameState.mousePos1 == null) {
+      GameState.mousePos1 = window.createVector(snappedX, snappedY);
     } else {
-      Constants.mousePos2 = window.createVector(snappedX, snappedY);
+      GameState.mousePos2 = window.createVector(snappedX, snappedY);
       // print('tempLevel.lines.push(new Line(' + mousePos1.x + ',' + mousePos1.y + ',' + mousePos2.x + ',' + mousePos2.y + '));');
       lines.push(
         new Line(
-          Constants.mousePos1.x,
-          Constants.mousePos1.y,
-          Constants.mousePos2.x,
-          Constants.mousePos2.y,
+          GameState.mousePos1.x,
+          GameState.mousePos1.y,
+          GameState.mousePos2.x,
+          GameState.mousePos2.y,
         ),
       );
       linesString +=
         "\ntempLevel.lines.push(new Line(" +
-        Constants.mousePos1.x +
+        GameState.mousePos1.x +
         "," +
-        Constants.mousePos1.y +
+        GameState.mousePos1.y +
         "," +
-        Constants.mousePos2.x +
+        GameState.mousePos2.x +
         "," +
-        Constants.mousePos2.y +
+        GameState.mousePos2.y +
         "));";
-      Constants.mousePos1 = null;
-      Constants.mousePos2 = null;
+      GameState.mousePos1 = null;
+      GameState.mousePos2 = null;
     }
   } else if (
-    Constants.placingPlayer &&
-    !Constants.playerPlaced &&
-    Constants.player
+    GameState.placingPlayer &&
+    !GameState.playerPlaced &&
+    GameState.player
   ) {
-    Constants.playerPlaced = true;
-    Constants.player.currentPos = window.createVector(
+    GameState.playerPlaced = true;
+    GameState.player.currentPos = window.createVector(
       window.mouseX,
       window.mouseY,
     );

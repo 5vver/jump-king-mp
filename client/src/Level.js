@@ -1,4 +1,4 @@
-import { Constants } from "./constants.js";
+import { GameState } from "./constants.js";
 
 class Level {
   constructor() {
@@ -14,12 +14,12 @@ class Level {
   show() {
     window.push();
     window.image(this.levelImage, 0, 0);
-    if (Constants.showingLines) {
-      for (let l of Constants.lines) {
+    if (GameState.showingLines) {
+      for (let l of GameState.lines) {
         l.Show();
       }
     }
-    if (Constants.showingCoins) {
+    if (GameState.showingCoins) {
       for (let c of this.coins) {
         c.show();
       }
