@@ -23,8 +23,11 @@ var upgrader = websocket.Upgrader{
 	WriteBufferSize:   1024,
 	EnableCompression: false,
 	CheckOrigin: func(r *http.Request) bool {
-		// dev purposes CHANGE THAT
-		return true
+		var origin = r.Header.Get("origin")
+		if origin == "https://5vver.github.io" {
+			return true
+		}
+		return false
 	},
 }
 
