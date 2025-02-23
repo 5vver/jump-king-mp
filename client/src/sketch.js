@@ -152,7 +152,7 @@ function setup() {
         hide();
         GameState.playerName = inputValue.replace(/ /g, "");
         GameState.connection = new ClientConnection({
-          SessionId: GameState.sid,
+          sessionId: GameState.sid,
           onConnected,
           onSessionJoin,
           onSessionQuit,

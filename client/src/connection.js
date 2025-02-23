@@ -104,7 +104,7 @@ class ClientConnection {
       JSON.stringify({
         ...data,
         ClientId: data?.ClientId ?? this.#clientId,
-        SessionId: data?.SessionId ?? this.#sessionId,
+        SessionId: this.#sessionId,
         Type: data.Type ?? "info",
       }),
     );

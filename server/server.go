@@ -72,12 +72,7 @@ func handleNewClient(conn *websocket.Conn) (client *Client, err error) {
 	}
 
 	// Handle session
-	sessionId := ""
-	if len(initialMessage.SessionId) > 0 {
-		sessionId = initialMessage.SessionId
-	} else {
-		sessionId = uuid.NewString()[0:6]
-	}
+	sessionId := initialMessage.SessionId
 	if !slices.Contains(sessions, sessionId) {
 		log.Printf("[INFO] New session: %s", sessionId)
 		sessions = append(sessions, sessionId)
