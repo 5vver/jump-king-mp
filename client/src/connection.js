@@ -8,6 +8,7 @@ class ClientConnection {
   connected = false;
 
   constructor({
+    sessionId,
     onSessionJoin,
     onSessionQuit,
     onConnected,
@@ -20,6 +21,7 @@ class ClientConnection {
 
     // this.#clientId = getRandomId();
 
+    this.#sessionId = sessionId;
     this.onConnected = onConnected;
     this.onSessionJoin = onSessionJoin;
     this.onSessionQuit = onSessionQuit;
@@ -49,7 +51,8 @@ class ClientConnection {
     };
     conn.onerror = (error) => {
       this.connected = false;
-      console.log(`ws error: ${error}`);
+      console.log("ws error:");
+      console.log(error);
     };
     conn.onmessage = (event) => {
       const msg = JSON.parse(event.data);

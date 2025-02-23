@@ -1,4 +1,4 @@
-function createModal(onClick) {
+function createModal(msg, onClick, onHide) {
   let inputValue = "";
 
   const modalContainer = document.createElement("div");
@@ -21,6 +21,7 @@ function createModal(onClick) {
 
   const hide = () => {
     document.body.removeChild(modalContainer);
+    onHide?.();
   };
 
   input.onchange = (event) => {
@@ -34,7 +35,7 @@ function createModal(onClick) {
 
   input.style.fontSize = "18px";
   button.textContent = "enter";
-  text.textContent = "Enter your name";
+  text.textContent = msg ?? "Type in:";
   text.style.color = "white";
   text.style.fontFamily = "ttf_alkhemikal";
   text.style.fontSize = "40px";
@@ -66,4 +67,7 @@ function createChatWindow() {
   document.body.appendChild(chatContainer);
 }
 
-export { createModal, createChatWindow, getSessionId };
+const validateInputValue = (value) =>
+  value && typeof value === "string" && value.length > 0;
+
+export { createModal, createChatWindow, getSessionId, validateInputValue };

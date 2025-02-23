@@ -1,6 +1,9 @@
 package main
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"os"
+)
 
 func GenericUnmarshal[T any](data []byte) (*T, error) {
 	var result T
@@ -9,4 +12,12 @@ func GenericUnmarshal[T any](data []byte) (*T, error) {
 	}
 
 	return &result, nil
+}
+
+func getEnv(key string, defaultVal string) string {
+	if value, exists := os.LookupEnv(key); exists {
+		return value
+	}
+
+	return defaultVal
 }

@@ -2,7 +2,7 @@ import { ClientConnection } from "./connection";
 import { setupLevels } from "./LevelSetupFunction";
 import { GameState } from "./constants.js";
 import { Line } from "./Line";
-import { createModal, getSessionId } from "./utils";
+import { createModal, getSessionId, validateInputValue } from "./utils";
 import { Player } from "./Player.js";
 
 function preload() {
@@ -39,12 +39,6 @@ function preload() {
 const onSessionJoin = (conn, connType, msg) => {
   const clientId = conn.getClientId();
   const pName = msg.Data?.PlayerName;
-
-  let sessionId = getSessionId();
-  if (!sessionId && msg.SessionId) {
-    sessionId = msg.SessionId;
-    window.location.href = `${window.location.href}${sessionId}`;
-  }
 
   if (connType === "start" && !GameState.player) {
     GameState.player = new Player(clientId, pName);
@@ -147,24 +141,36 @@ function setupCanvas() {
 }
 
 function setup() {
-  createModal((inputValue, hide) => {
-    if (
-      !inputValue ||
-      typeof inputValue !== "string" ||
-      inputValue.length < 1
-    ) {
-      return;
-    }
+  const nameModalSequence = () =>
+    createModal("Enter your name:", (inputValue, hide) => {
+      if (!validateInputValue(inputValue)) {
+        return;
+      }
 
-    hide();
-    GameState.playerName = inputValue.replace(/ /g, "");
-    GameState.connection = new ClientConnection({
-      onConnected,
-      onSessionJoin,
-      onSessionQuit,
-      onActionReceive,
+      hide();
+      GameState.playerName = inputValue.replace(/ /g, "");
+      GameState.connection = new ClientConnection({
+        SessionId: GameState.sid,
+        onConnected,
+        onSessionJoin,
+        onSessionQuit,
+        onActionReceive,
+      });
     });
-  });
+
+  createModal(
+    "Enter Session Id:",
+    (inputValue, hide) => {
+      if (!validateInputValue(inputValue)) {
+        return;
+      }
+
+      hide();
+      GameState.sid = inputValue;
+    },
+    nameModalSequence,
+  );
+
   // createChatWindow();
   setupCanvas();
 

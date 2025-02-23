@@ -24,7 +24,7 @@ var upgrader = websocket.Upgrader{
 	EnableCompression: false,
 	CheckOrigin: func(r *http.Request) bool {
 		var origin = r.Header.Get("origin")
-		if origin == "https://5vver.github.io" {
+		if origin == getEnv("ORIGIN_URL", "") {
 			return true
 		}
 		return false
@@ -209,7 +209,7 @@ func handleConnection(client *Client) {
 func handleConnections(w http.ResponseWriter, r *http.Request) {
 	ws, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
-		log.Fatal(err)
+		log.Printf("[ERROR] error upgrading connection: %v", err)
 	}
 
 	newClient, err := handleNewClient(ws)
