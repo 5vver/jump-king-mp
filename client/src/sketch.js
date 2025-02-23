@@ -41,14 +41,16 @@ const onSessionJoin = (conn, connType, msg) => {
   const pName = msg.Data?.PlayerName;
 
   if (connType === "start" && !GameState.player) {
-    GameState.player = new Player(clientId, pName);
+    GameState.player = new Player(clientId, pName, true);
 
     const connections = msg.Data?.Connections;
     for (const [connectionId, connectionName] of Object.entries(connections)) {
       if (connectionId === clientId) {
         continue;
       }
-      GameState.joinedPlayers.add(new Player(connectionId, connectionName));
+      GameState.joinedPlayers.add(
+        new Player(connectionId, connectionName, false),
+      );
     }
 
     GameState.streamInterval = setInterval(
@@ -72,6 +74,7 @@ const onSessionJoin = (conn, connType, msg) => {
           currentSpeedY: GameState.player.currentSpeed.y,
           sliddingRight: GameState.player.sliddingRight,
           hasFallen: GameState.player.hasFallen,
+          jumpTimer: GameState.player.jumpTimer,
         };
         conn.send({ Type: "action", Data: data });
       },
@@ -117,6 +120,7 @@ const onActionReceive = (msg) => {
   updatePlayer.currentSpeed.y = data.currentSpeedY;
   updatePlayer.sliddingRight = data.sliddingRight;
   updatePlayer.hasFallen = data.hasFallen;
+  updatePlayer.jumpTimer = data.jumpTimer;
 };
 
 const onConnected = (conn) => {

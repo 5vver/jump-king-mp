@@ -131,9 +131,10 @@ class PlayerState {
 }
 
 class Player {
-  constructor(id, playerName) {
+  constructor(id, playerName, isMain = false) {
     this.id = id;
     this.playerName = playerName;
+    this.isMain = isMain;
 
     this.width = 50;
     this.height = 65;
@@ -225,11 +226,6 @@ class Player {
     this.bestLevelReached = 0;
     this.reachedHeightAtStepNo = 0;
     this.bestLevelReachedOnActionNo = 0;
-    //
-    // this.Constants.jumpSound = loadSound('sounds/jump.mp3')
-    // this.Constants.fallSound = loadSound('sounds/fall.mp3')
-    // Constants.bumpSound = loadSound('sounds/bump.mp3')
-    // Constants.landSound = loadSound('sounds/land.mp3')
 
     this.fitness = 0;
     this.hasFinishedInstructions = false;
@@ -430,6 +426,13 @@ class Player {
     }
   }
 
+  CheckPlaySound() {
+    return (
+      this.isMain ||
+      (!this.isMain && GameState.player.currentLevelNo === this.currentLevelNo)
+    );
+  }
+
   CheckCollisions(currentLines) {
     let collidedLines = [];
     for (let i = 0; i < currentLines.length; i++) {
@@ -471,7 +474,8 @@ class Player {
         this.currentSpeed.y = 0 - this.currentSpeed.y / 2;
         // ok we gonna need to snap this shit
         this.currentPos.y = chosenLine.y1;
-        if (!mutePlayers || testingSinglePlayer) {
+
+        if (this.CheckPlaySound()) {
           GameState.bumpSound.playMode("sustain");
           GameState.bumpSound.play();
         }
@@ -496,7 +500,7 @@ class Player {
       this.currentSpeed.x = 0 - this.currentSpeed.x / 2;
       if (!this.isOnGround) {
         this.hasBumped = true;
-        if (!mutePlayers || testingSinglePlayer) {
+        if (this.CheckPlaySound()) {
           GameState.bumpSound.playMode("sustain");
           GameState.bumpSound.play();
         }
@@ -743,7 +747,7 @@ class Player {
       return;
     }
 
-    let verticalJumpSpeed = map(
+    let verticalJumpSpeed = window.map(
       this.jumpTimer,
       0,
       maxJumpTimer,
@@ -774,7 +778,7 @@ class Player {
       GameState.height -
       this.currentPos.y +
       GameState.height * this.currentLevelNo;
-    if (!mutePlayers || testingSinglePlayer) {
+    if (this.CheckPlaySound()) {
       GameState.jumpSound.playMode("sustain");
       GameState.jumpSound.play();
     }
@@ -1357,7 +1361,7 @@ class Player {
       this.hasFinishedInstructions = true;
     }
 
-    if (!mutePlayers || testingSinglePlayer) {
+    if (this.CheckPlaySound()) {
       if (this.hasFallen) {
         GameState.fallSound.playMode("sustain");
         GameState.fallSound.play();
