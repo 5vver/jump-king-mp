@@ -1,4 +1,5 @@
 import { GameState } from "./constants.js";
+import { DiagonalCollisionInfo } from "./Line.js";
 
 let minJumpSpeed = 5;
 let maxJumpSpeed = 22;

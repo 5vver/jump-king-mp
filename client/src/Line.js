@@ -49,4 +49,4 @@ class Line {
   }
 }
 
-export { Line };
+export { DiagonalCollisionInfo, Line };
