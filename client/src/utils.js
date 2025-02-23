@@ -1,4 +1,6 @@
-function createModal(msg, onClick, onHide) {
+import { v4 as uuidv4 } from "uuid";
+
+function createModal({ title, onClick, onHide, initial, maxLength }) {
   let inputValue = "";
 
   const modalContainer = document.createElement("div");
@@ -7,7 +9,7 @@ function createModal(msg, onClick, onHide) {
   const text = document.createElement("p");
 
   modalContainer.style.position = "absolute";
-  modalContainer.style.width = "250px";
+  modalContainer.style.width = "300px";
   modalContainer.style.height = "120px";
   modalContainer.style.inset = 0;
   modalContainer.style.marginLeft = "calc(50% - 120px)";
@@ -27,7 +29,16 @@ function createModal(msg, onClick, onHide) {
   input.onchange = (event) => {
     inputValue = event.target.value;
   };
-  input.maxLength = 12;
+  input.maxLength = maxLength ?? 12;
+  if (initial) {
+    input.value = initial;
+    inputValue = initial;
+    // delayed select input
+    setTimeout(() => {
+      input.focus();
+      input.select();
+    }, 0);
+  }
 
   button.onclick = (event) => {
     onClick?.(inputValue, hide);
@@ -35,7 +46,7 @@ function createModal(msg, onClick, onHide) {
 
   input.style.fontSize = "18px";
   button.textContent = "enter";
-  text.textContent = msg ?? "Type in:";
+  text.textContent = title ?? "Type in:";
   text.style.color = "white";
   text.style.fontFamily = "ttf_alkhemikal";
   text.style.fontSize = "40px";
@@ -43,9 +54,6 @@ function createModal(msg, onClick, onHide) {
 
   document.body.appendChild(modalContainer);
 }
-
-const getSessionId = () =>
-  new URL(window.location.href).pathname.match(/[^\/]+/g)?.[0];
 
 function createChatWindow() {
   const chatContainer = document.createElement("div");
@@ -70,4 +78,6 @@ function createChatWindow() {
 const validateInputValue = (value) =>
   value && typeof value === "string" && value.length > 0;
 
-export { createModal, createChatWindow, getSessionId, validateInputValue };
+const generateSessionId = () => uuidv4().slice(0, 5);
+
+export { createModal, createChatWindow, validateInputValue, generateSessionId };
