@@ -12,8 +12,8 @@ class ClientConnection {
     onSessionJoin,
     onSessionQuit,
     onConnected,
-    onDisconnected,
     onActionReceive,
+    onMessage,
   } = {}) {
     if (!this.#wsConnection) {
       this.#wsConnection = new WebSocket(import.meta.env.VITE_WS_URL);
@@ -26,6 +26,7 @@ class ClientConnection {
     this.onSessionJoin = onSessionJoin;
     this.onSessionQuit = onSessionQuit;
     this.onActionReceive = onActionReceive;
+    this.onMessage = onMessage;
 
     this.init();
   }
@@ -56,6 +57,7 @@ class ClientConnection {
     };
     conn.onmessage = (event) => {
       const msg = JSON.parse(event.data);
+      this.onMessage?.(msg);
 
       if (msg.Type === "action") {
         this.onActionReceive?.(msg);

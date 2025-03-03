@@ -70,6 +70,8 @@ const GameState = {
 
   levelImages: [],
   levels: [],
+
+  chat: null,
 };
 
 const isDev = import.meta.env.MODE === "development";

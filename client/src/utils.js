@@ -55,29 +55,9 @@ function createModal({ title, onClick, onHide, initial, maxLength }) {
   document.body.appendChild(modalContainer);
 }
 
-function createChatWindow() {
-  const chatContainer = document.createElement("div");
-  const input = document.createElement("input");
-  const button = document.createElement("button");
-  const text = document.createElement("p");
-
-  // style
-  chatContainer.style.display = "flex";
-  chatContainer.style.flexDirection = "column";
-  chatContainer.style.gap = "8px";
-  chatContainer.style.position = "absolute";
-  chatContainer.style.top = 0;
-  chatContainer.style.right = 0;
-  chatContainer.style.background = "red";
-  chatContainer.style.width = "320px";
-  chatContainer.style.height = "120px";
-
-  document.body.appendChild(chatContainer);
-}
-
 const validateInputValue = (value) =>
   value && typeof value === "string" && value.length > 0;
 
 const generateSessionId = () => uuidv4().slice(0, 5);
 
-export { createModal, createChatWindow, validateInputValue, generateSessionId };
+export { createModal, validateInputValue, generateSessionId };

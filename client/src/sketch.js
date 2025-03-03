@@ -4,6 +4,8 @@ import { GameState } from "./constants.js";
 import { Line } from "./Line";
 import { createModal, generateSessionId, validateInputValue } from "./utils";
 import { Player } from "./Player.js";
+import { Chat } from "./Chat.js";
+import { events } from "./events.js";
 
 function preload() {
   GameState.backgroundImage = window.loadImage(
@@ -35,108 +37,6 @@ function preload() {
   GameState.font = window.loadFont("assets/fonts/ttf_alkhemikal.ttf");
 }
 
-// Spawn main Constants.player & joined players on connection
-const onSessionJoin = (conn, connType, msg) => {
-  const clientId = conn.getClientId();
-  const pName = msg.Data?.PlayerName;
-
-  if (connType === "start" && !GameState.player) {
-    GameState.player = new Player(clientId, pName, true);
-
-    const connections = msg.Data?.Connections;
-    for (const [connectionId, connectionName] of Object.entries(connections)) {
-      if (connectionId === clientId) {
-        continue;
-      }
-      GameState.joinedPlayers.add(
-        new Player(connectionId, connectionName, false),
-      );
-    }
-
-    GameState.streamInterval = setInterval(
-      () => {
-        if (!conn.connected) {
-          clearInterval(GameState.streamInterval);
-          return;
-        }
-
-        const data = {
-          x: GameState.player.currentPos.x,
-          y: GameState.player.currentPos.y,
-          leftHeld: GameState.player.leftHeld,
-          rightHeld: GameState.player.rightHeld,
-          jumpHeld: GameState.player.jumpHeld,
-          facingRight: GameState.player.facingRight,
-          currentLevelNo: GameState.player.currentLevelNo,
-          isOnGround: GameState.player.isOnGround,
-          isSlidding: GameState.player.isSlidding,
-          currentSpeedX: GameState.player.currentSpeed.x,
-          currentSpeedY: GameState.player.currentSpeed.y,
-          sliddingRight: GameState.player.sliddingRight,
-          hasFallen: GameState.player.hasFallen,
-          jumpTimer: GameState.player.jumpTimer,
-        };
-        conn.send({ Type: "action", Data: data });
-      },
-      // send 25 times per second
-      40,
-    );
-
-    return;
-  }
-
-  if ([...GameState.joinedPlayers].every((p) => p.id !== msg.ClientId)) {
-    GameState.joinedPlayers.add(new Player(msg.ClientId, pName));
-  }
-};
-
-// Remove disconnected players
-const onSessionQuit = (clientId) => {
-  GameState.joinedPlayers.forEach((p) => {
-    if (p.id === clientId || !clientId) {
-      GameState.joinedPlayers.delete(p);
-    }
-  });
-};
-
-// Update joined players state
-const onActionReceive = (msg) => {
-  const id = msg.ClientId;
-  const data = msg.Data;
-
-  const updatePlayer = [...GameState.joinedPlayers].find((p) => p.id === id);
-  if (!updatePlayer) {
-    return;
-  }
-  updatePlayer.currentPos = window.createVector(data.x, data.y);
-  updatePlayer.rightHeld = data.rightHeld;
-  updatePlayer.leftHeld = data.leftHeld;
-  updatePlayer.jumpHeld = data.jumpHeld;
-  updatePlayer.facingRight = data.facingRight;
-  updatePlayer.currentLevelNo = data.currentLevelNo;
-  updatePlayer.isOnGround = data.isOnGround;
-  updatePlayer.isSlidding = data.isSlidding;
-  updatePlayer.currentSpeed.x = data.currentSpeedX;
-  updatePlayer.currentSpeed.y = data.currentSpeedY;
-  updatePlayer.sliddingRight = data.sliddingRight;
-  updatePlayer.hasFallen = data.hasFallen;
-  updatePlayer.jumpTimer = data.jumpTimer;
-};
-
-const onConnected = (conn) => {
-  const sessionId = conn.getSessionId();
-  // types: info, connect, disconnect, action, session
-  const connectMessage = {
-    Type: "connect",
-    SessionId: sessionId?.length > 0 ? sessionId : undefined,
-    Data: {
-      SessionType: sessionId?.length > 0 ? "connect" : "create",
-      PlayerName: GameState.playerName,
-    },
-  };
-  conn.send(connectMessage);
-};
-
 function setupCanvas() {
   GameState.canvas = window.createCanvas(1200, 950);
   GameState.canvas.parent("canvas");
@@ -157,10 +57,11 @@ function setup() {
         GameState.playerName = inputValue.replace(/ /g, "");
         GameState.connection = new ClientConnection({
           sessionId: GameState.sid,
-          onConnected,
-          onSessionJoin,
-          onSessionQuit,
-          onActionReceive,
+          onConnected: events.onConnected,
+          onSessionJoin: events.onSessionJoin,
+          onSessionQuit: events.onSessionQuit,
+          onActionReceive: events.onActionReceive,
+          onMessage: events.onMessage,
         });
       },
     });
@@ -180,10 +81,14 @@ function setup() {
     maxLength: 5,
   });
 
-  // createChatWindow();
-  setupCanvas();
+  const chat = new Chat({ onSend: events.onMessageSend });
+  GameState.chat = chat;
+  // chat.appendMessage("message", "awdawdawdwad", "lol");
+  // chat.appendMessage("system", "awdawdawdwad", "lol");
 
+  setupCanvas();
   setupLevels();
+
   GameState.jumpSound.playMode("sustain");
   GameState.fallSound.playMode("sustain");
   GameState.bumpSound.playMode("sustain");
@@ -265,13 +170,13 @@ function draw() {
     20,
     35,
   );
-  const isConnected = !!GameState.connection?.getIsConnected();
-  window.fill(isConnected ? 0 : 255, isConnected ? 255 : 0, 0);
-  window.text(
-    isConnected ? "Connected" : "Disconnected",
-    GameState.width - 160,
-    35,
-  );
+  // const isConnected = !!GameState.connection?.getIsConnected();
+  // window.fill(isConnected ? 0 : 255, isConnected ? 255 : 0, 0);
+  // window.text(
+  //   isConnected ? "Connected" : "Disconnected",
+  //   GameState.width - 160,
+  //   35,
+  // );
 }
 
 function showLevel(levelNumberToShow) {
@@ -291,7 +196,7 @@ function showLines() {
 }
 
 function keyPressed() {
-  if (!GameState.player) {
+  if (!GameState.player || GameState.chat.isOpened) {
     return;
   }
 
@@ -320,11 +225,14 @@ function keyPressed() {
     case RIGHT_ARROW:
       GameState.player.rightHeld = true;
       break;
+    case ENTER:
+      GameState.chat.openClose();
+      break;
   }
 }
 
 function keyReleased() {
-  if (!GameState.player) {
+  if (!GameState.player || GameState.chat.isOpened) {
     return;
   }
 
