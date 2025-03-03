@@ -122,10 +122,6 @@ func handleNewClient(conn *websocket.Conn) (client *Client, err error) {
 
 func handleConnection(client *Client) {
 	clientId, sessionId, conn := client.ClientId, client.SessionId, client.Conn
-	defer func() {
-		conn.Close()
-		log.Printf("[INFO] Connection closed: %s", clientId)
-	}()
 
 	msgChan := make(chan []byte)
 
@@ -196,9 +192,19 @@ func handleConnection(client *Client) {
 	delete(clients, clientId)
 	log.Printf("[INFO] Disconnected: %s", clientId)
 	broadcastMutex.Unlock()
+
 	// Broadcast disconnected session
-	msgBytes, _ := json.Marshal(Message[interface{}]{Type: "disconnect", ClientId: clientId, SessionId: sessionId})
+	msgBytes, err := json.Marshal(Message[interface{}]{Type: "disconnect", ClientId: clientId, SessionId: sessionId})
+	if err != nil {
+		log.Println("[ERROR] JSON marshal error", err)
+		return
+	}
 	broadcastMessage(BroadcastParams{Msg: msgBytes, SessionId: sessionId})
+
+	defer func() {
+		conn.Close()
+		log.Printf("[INFO] Connection closed: %s", clientId)
+	}()
 }
 
 func handleConnections(w http.ResponseWriter, r *http.Request) {
